@@ -291,9 +291,11 @@ function showNextQuestion(digitsPerQuestion, start) {
     var CONST_1000 = getDigits1000();
     var displayText = CONST_1000.substring(0, 2 + currentPosition);
     piDisplay.textContent = displayText;
+    piDisplay.scrollTop = piDisplay.scrollHeight;
 
     var nextDigits = CONST_1000.substring(2 + currentPosition, 2 + currentPosition + digitsPerQuestion);
     questionText.textContent = '다음 ' + digitsPerQuestion + '자리는?';
+    document.getElementById('debugAnswer').textContent = '정답: ' + nextDigits;
 
     var correctAnswer = nextDigits;
     var choices = [correctAnswer];
@@ -349,6 +351,13 @@ function initKeypadMode(start) {
     resultMessage.classList.remove('show');
 
     display.textContent = getConst().intPart + '.';
+    updateKeypadDebug();
+}
+
+function updateKeypadDebug() {
+    var CONST_1000 = getDigits1000();
+    var next10 = CONST_1000.substring(2 + currentPosition, 2 + currentPosition + 10);
+    document.getElementById('keypadDebugAnswer').textContent = '정답: ' + next10;
 }
 
 document.getElementById('keypad').addEventListener('click', function(e) {
@@ -371,7 +380,9 @@ function handleKeypadInput(digit) {
         userInput += digit;
         currentPosition++;
         display.textContent = CONST_1000.substring(0, 2 + currentPosition);
+        display.scrollTop = display.scrollHeight;
         updateKeypadProgress();
+        updateKeypadDebug();
         if (currentPosition >= 1000) endMemorize();
     } else {
         resultMessage.innerHTML =
