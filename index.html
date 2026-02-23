@@ -2,148 +2,194 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pi Finder - 파이 외우기 & 찾기</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수학 상수 외우기 & 찾기</title>
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
-    <!-- 헤더 -->
-    <header>
-        <button class="menu-toggle" id="menuToggle">☰</button>
-        <h1>Pi Finder</h1>
-    </header>
+    <div class="app" id="app" data-const="pi">
 
-    <!-- 사이드 메뉴 -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>메뉴</h2>
-            <button class="close-btn" id="closeMenu">×</button>
-        </div>
-        <div class="sidebar-user">
-            <div class="user-greeting">
-                <span>안녕하세요 </span>
-                <span id="userNameDisplay"></span>
-                <button class="edit-name-btn" id="editNameBtn" title="이름 변경">✏️</button>
+        <!-- ===== Header ===== -->
+        <header class="header">
+            <div class="header-left">
+                <button class="back-btn" id="backBtn" style="display:none">←</button>
             </div>
-            <div class="edit-name-panel hidden" id="editNamePanel">
-                <input type="text" id="userNameInput" placeholder="이름 입력">
-                <button id="saveNameBtn">저장</button>
-                <button id="randomNameBtn">랜덤 생성</button>
-            </div>
-        </div>
-        <nav class="sidebar-nav">
-            <a href="https://www.youtube.com/watch?v=KcRJgoW10FE" target="_blank" class="menu-link">나 요즘 파이 됐대</a>
-            <a href="https://github.com/keewon/pi_finder" target="_blank" class="menu-link">문의</a>
-        </nav>
-    </aside>
-
-    <!-- 오버레이 -->
-    <div class="overlay" id="overlay"></div>
-
-    <!-- 메인 컨텐츠 -->
-    <main>
-        <!-- 탭 네비게이션 -->
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="memorize">파이 외우기</button>
-            <button class="tab-btn" data-tab="search">파이 찾기</button>
-        </div>
-
-        <!-- 파이 외우기 탭 -->
-        <div class="tab-content active" id="memorizeTab">
-            <div class="options-panel">
-                <div class="option-group">
-                    <label>시작 위치:</label>
-                    <select id="startOption">
-                        <option value="decimal" selected>소숫점 이하부터</option>
-                        <option value="three">3. 부터</option>
-                    </select>
+            <div class="header-center">
+                <div class="const-toggles" id="constToggles">
+                    <button class="const-btn active" data-const="pi">π</button>
+                    <button class="const-btn" data-const="e">e</button>
+                    <button class="const-btn" data-const="sqrt2">√2</button>
                 </div>
-                <div class="option-group">
-                    <label>모드:</label>
-                    <select id="modeOption">
-                        <option value="multiple3">객관식 (3자리씩)</option>
-                        <option value="multiple4" selected>객관식 (4자리씩)</option>
-                        <option value="keypad">키패드 입력</option>
-                    </select>
+                <span class="view-title" id="viewTitle" style="display:none"></span>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" id="settingsBtn">⚙</button>
+            </div>
+        </header>
+
+        <!-- ===== HOME VIEW ===== -->
+        <div class="view active" id="homeView">
+            <div class="home-hero">
+                <!-- Character -->
+                <div class="penguin">
+                    <img src="images/01_hello.png" alt="Hello">
+                </div>
+
+                <div class="home-title" id="homeTitle">π</div>
+                <div class="home-greeting">안녕하세요, <span class="nickname" id="userName"></span></div>
+
+                <!-- Flowing digits -->
+                <div class="digits-flow">
+                    <div class="digits-flow-track" id="digitsTrack"></div>
                 </div>
             </div>
 
-            <!-- 객관식 모드 -->
-            <div class="memorize-content" id="multipleChoiceMode">
-                <div class="progress-info">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
+            <!-- Action buttons -->
+            <div class="home-actions">
+                <button class="action-btn primary" id="goMemorize">
+                    <span class="action-label">외우기</span>
+                    <span class="action-sub">Memorize</span>
+                </button>
+                <button class="action-btn outline" id="goSearch">
+                    <span class="action-label">찾기</span>
+                    <span class="action-sub">Find</span>
+                </button>
+            </div>
+
+            <div class="home-records-link">
+                <button id="goRecords">기록 보기 →</button>
+            </div>
+
+            <footer class="footer">
+                <a href="https://github.com/keewon/pi_finder" target="_blank">문의하기</a>
+                <span class="dot">·</span>
+                <a href="https://www.youtube.com/watch?v=KcRJgoW10FE" target="_blank">나 요즘 파이 됐대</a>
+                <span class="dot">·</span>
+                <span>© 2026 Keewon Seo</span>
+            </footer>
+        </div>
+
+        <!-- ===== MEMORIZE VIEW ===== -->
+        <div class="view" id="memorizeView">
+            <!-- Multiple choice mode -->
+            <div id="multipleChoiceMode">
+                <div class="progress-section">
+                    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
                     <div class="stats">
-                        <span>진행: <span id="currentPosition">0</span> / 1000 자리</span>
-                        <span>시간: <span id="elapsedTime">00:00</span></span>
+                        <span><span id="currentPosition">0</span> / 1000자리</span>
+                        <span id="elapsedTime">00:00</span>
                     </div>
                 </div>
-                <div class="question-display">
-                    <div class="pi-display" id="piDisplay"></div>
-                    <div class="question-text" id="questionText"></div>
-                </div>
-                <div class="choices" id="choices"></div>
-                <div class="result-message" id="resultMessage"></div>
+                <div class="digits-display" id="piDisplay"></div>
+                <div class="question-text" id="questionText"></div>
+                <div class="choices-grid" id="choices"></div>
+                <div class="result-msg" id="resultMessage"></div>
             </div>
 
-            <!-- 키패드 모드 -->
-            <div class="memorize-content hidden" id="keypadMode">
-                <div class="progress-info">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="keypadProgressFill"></div>
-                    </div>
+            <!-- Keypad mode -->
+            <div id="keypadMode" class="hidden">
+                <div class="progress-section">
+                    <div class="progress-bar"><div class="progress-fill" id="keypadProgressFill"></div></div>
                     <div class="stats">
-                        <span>진행: <span id="keypadCurrentPosition">0</span> / 1000 자리</span>
-                        <span>시간: <span id="keypadElapsedTime">00:00</span></span>
+                        <span><span id="keypadCurrentPosition">0</span> / 1000자리</span>
+                        <span id="keypadElapsedTime">00:00</span>
                     </div>
                 </div>
-                <div class="question-display">
-                    <div class="pi-display" id="keypadPiDisplay"></div>
-                    <div class="input-display" id="inputDisplay"></div>
+                <div class="digits-display" id="keypadPiDisplay"></div>
+                <div class="keypad-grid" id="keypad">
+                    <button class="keypad-key" data-key="1">1</button>
+                    <button class="keypad-key" data-key="2">2</button>
+                    <button class="keypad-key" data-key="3">3</button>
+                    <button class="keypad-key" data-key="4">4</button>
+                    <button class="keypad-key" data-key="5">5</button>
+                    <button class="keypad-key" data-key="6">6</button>
+                    <button class="keypad-key" data-key="7">7</button>
+                    <button class="keypad-key" data-key="8">8</button>
+                    <button class="keypad-key" data-key="9">9</button>
+                    <button class="keypad-key delete" data-key="delete">⌫</button>
+                    <button class="keypad-key" data-key="0">0</button>
                 </div>
-                <div class="keypad" id="keypad">
-                    <button class="key-btn" data-key="0">0</button>
-                    <button class="key-btn" data-key="1">1</button>
-                    <button class="key-btn" data-key="2">2</button>
-                    <button class="key-btn" data-key="3">3</button>
-                    <button class="key-btn" data-key="4">4</button>
-                    <button class="key-btn" data-key="5">5</button>
-                    <button class="key-btn" data-key="6">6</button>
-                    <button class="key-btn" data-key="7">7</button>
-                    <button class="key-btn" data-key="8">8</button>
-                    <button class="key-btn" data-key="9">9</button>
-                    <button class="key-btn delete" id="deleteBtn">⌫</button>
-                </div>
-                <div class="result-message" id="keypadResultMessage"></div>
+                <div class="result-msg" id="keypadResultMessage"></div>
             </div>
 
-            <!-- 기록 저장 -->
-            <div class="record-panel" id="recordPanel">
-                <h3>기록 저장</h3>
-                <input type="text" id="recordName" placeholder="이름 (선택사항)">
-                <button id="saveRecordBtn">기록 저장</button>
-            </div>
-
-            <!-- 기록 목록 -->
-            <div class="records-panel">
-                <h3>기록 목록</h3>
-                <div id="recordsList"></div>
+            <!-- Game over panel -->
+            <div class="gameover-panel" id="gameoverPanel">
+                <div class="gameover-score" id="gameoverScore"></div>
+                <div class="gameover-actions">
+                    <button class="btn btn-primary btn-block" id="retryBtn">다시하기</button>
+                    <button class="btn btn-outline btn-block" id="continueBtn">이어서하기</button>
+                </div>
+                <div class="gameover-save">
+                    <input type="text" id="recordName" placeholder="이름">
+                    <button class="btn btn-primary btn-sm" id="saveRecordBtn">기록 저장</button>
+                </div>
             </div>
         </div>
 
-        <!-- 파이 찾기 탭 -->
-        <div class="tab-content" id="searchTab">
-            <div class="search-panel">
-                <input type="text" id="searchInput" placeholder="최대 8자리 숫자 입력" maxlength="8" pattern="[0-9]*">
-                <button id="searchBtn">찾기</button>
+        <!-- ===== SEARCH VIEW ===== -->
+        <div class="view" id="searchView">
+            <div class="search-desc" id="searchDesc">
+                <span id="searchConstSymbol">π</span>의 백만 자리 안에서 원하는 숫자가 어디에 있는지 찾아보세요.
+            </div>
+            <div class="search-input-group">
+                <input type="text" class="search-input" id="searchInput" placeholder="숫자 입력 (최대 8자리)" maxlength="8" inputmode="numeric" pattern="[0-9]*">
+                <button class="btn btn-primary" id="searchBtn">찾기</button>
             </div>
             <div class="search-result" id="searchResult"></div>
         </div>
-    </main>
+
+        <!-- ===== RECORDS VIEW ===== -->
+        <div class="view" id="recordsView">
+            <div class="records-list" id="recordsList"></div>
+        </div>
+
+        <!-- ===== SETTINGS MODAL ===== -->
+        <div class="modal-overlay" id="settingsModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3>설정</h3>
+                    <button class="modal-close" id="settingsClose">×</button>
+                </div>
+                <div class="setting-group">
+                    <div class="setting-label">사용자 이름</div>
+                    <div class="setting-value">
+                        <span id="settingsUserName"></span>
+                        <button id="editNameBtn">변경</button>
+                        <button id="randomNameBtn">랜덤</button>
+                    </div>
+                    <div class="setting-name-edit" id="nameEditPanel">
+                        <input type="text" id="nameInput" placeholder="이름 입력">
+                        <button class="btn btn-primary btn-sm" id="saveNameBtn">저장</button>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <div class="setting-label">시작 위치</div>
+                    <select class="setting-select" id="startOption">
+                        <option value="decimal">소숫점 이하부터</option>
+                        <option value="intpart" id="intpartOption">3. 부터</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <div class="setting-label">모드</div>
+                    <select class="setting-select" id="modeOption">
+                        <option value="keypad">키패드 입력 (1자리씩)</option>
+                        <option value="multiple2">객관식 (2자리씩)</option>
+                        <option value="multiple3">객관식 (3자리씩)</option>
+                        <option value="multiple4" selected>객관식 (4자리씩)</option>
+                        <option value="multiple5">객관식 (5자리씩)</option>
+                        <option value="multiple6">객관식 (6자리씩)</option>
+                        <option value="multiple7">객관식 (7자리씩)</option>
+                        <option value="multiple8">객관식 (8자리씩)</option>
+                        <option value="multiple9">객관식 (9자리씩)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="pi-data.js"></script>
-    <script src="app.js"></script>
+    <script src="e-data.js"></script>
+    <script src="sqrt2-data.js"></script>
+    <script src="app.js?v=3"></script>
 </body>
 </html>
-
