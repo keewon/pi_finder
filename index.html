@@ -32,11 +32,11 @@
             <div class="home-hero">
                 <!-- Character -->
                 <div class="penguin">
-                    <img src="images/01_hello.png" alt="Hello">
+                    <img id="charImage" src="images/home/01_hello.png" alt="Character">
                 </div>
 
                 <div class="home-title" id="homeTitle">π</div>
-                <div class="home-greeting">안녕하세요, <span class="nickname" id="userName"></span></div>
+                <div class="home-greeting">안녕하세요, <span class="nickname" id="userName"></span><sup class="footnote-star" id="userStar">*</sup></div>
                 <div class="home-user-desc" id="userDesc"></div>
 
                 <!-- Flowing digits -->
@@ -156,7 +156,7 @@
                 <div class="setting-group">
                     <div class="setting-label">사용자 이름</div>
                     <div class="setting-value">
-                        <span id="settingsUserName"></span>
+                        <span><span id="settingsUserName"></span><sup class="footnote-star" id="settingsUserStar">*</sup></span>
                         <button id="editNameBtn">변경</button>
                         <button id="randomNameBtn">랜덤</button>
                     </div>
@@ -185,6 +185,7 @@
                         <option value="multiple7">객관식 (7자리씩)</option>
                         <option value="multiple8">객관식 (8자리씩)</option>
                         <option value="multiple9">객관식 (9자리씩)</option>
+                        <option value="multiple10">객관식 (10자리씩)</option>
                     </select>
                 </div>
             </div>

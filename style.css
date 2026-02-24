@@ -190,11 +190,20 @@ input, select { font-family: inherit; }
     font-weight: 600;
 }
 
-.home-user-desc {
+.footnote-star {
+    color: var(--accent);
+    font-size: 0.7em;
+    margin-left: 1px;
+}
+
+.home-user-desc, .setting-user-desc {
     font-size: 0.75rem;
     color: var(--text-sub);
-    margin-bottom: 12px;
     min-height: 1.1em;
+}
+
+.home-user-desc {
+    margin-bottom: 12px;
 }
 
 /* Flowing digits */
@@ -445,6 +454,8 @@ input, select { font-family: inherit; }
 
 .gameover-panel.show { display: block; }
 
+.gameover-score img { display: block; max-width: 120px; margin: 0 auto 8px; }
+
 .gameover-score {
     text-align: center;
     font-size: 0.95rem;
@@ -577,6 +588,7 @@ input, select { font-family: inherit; }
     padding: 16px;
 }
 
+.search-result-card img { display: block; max-width: 120px; margin: 0 auto 8px; }
 .search-result-card h4 { font-size: 0.95rem; color: var(--accent); margin-bottom: 8px; }
 .search-result-card p { font-size: 0.9rem; color: var(--text-sub); line-height: 1.6; margin-bottom: 4px; }
 .search-result-card strong { color: var(--text); }
@@ -673,10 +685,7 @@ input, select { font-family: inherit; }
 .setting-value button { color: var(--accent); font-size: 0.85rem; font-weight: 600; padding: 4px 8px; }
 
 .setting-user-desc {
-    font-size: 0.75rem;
-    color: var(--text-sub);
     padding: 0 12px 4px;
-    min-height: 1.1em;
 }
 
 .setting-name-edit {

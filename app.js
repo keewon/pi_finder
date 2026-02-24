@@ -1,3 +1,17 @@
+// ===== Character Images =====
+var CHAR_IMAGES = {
+    home:      ['01_hello.png','05_please.png','07_question.png','09_dnd.png','10_busy.png','22_letsplay.png','24_thanks.png','27_at_home.png'],
+    success:   ['02_congrat.png','11_heart.png','15_surprise.png','18_okay.png','21_exciting.png'],
+    failure:   ['03_tears.png','04_no_battery.png','08_volcano.png','16_dizzy.png','23_annoying.png','25_depressed.png','28_cheer_up.png'],
+    found:     ['13_yes.png','17_funny.png','19_awesome.png','30_idea.png'],
+    not_found: ['06_boring.png','12_sleep.png','14_no.png','20_well.png','26_yawn.png','29_hmm.png']
+};
+
+function randomImage(category) {
+    var list = CHAR_IMAGES[category];
+    return 'images/' + category + '/' + list[Math.floor(Math.random() * list.length)];
+}
+
 // ===== Constants Config =====
 const CONSTANTS = {
     pi:    { key: 'pi',    name: 'Pi',  symbol: 'π',  intPart: '3', getDigits: function() { return PI_DIGITS; } },
@@ -102,12 +116,16 @@ function refreshUserName() {
     var desc = getMathematicianDesc(name);
     var el = document.getElementById('settingsUserName');
     if (el) el.textContent = name;
+    var settingsStar = document.getElementById('settingsUserStar');
+    if (settingsStar) settingsStar.style.display = desc ? '' : 'none';
     var settingsDesc = document.getElementById('settingsUserDesc');
-    if (settingsDesc) settingsDesc.textContent = desc || '';
+    if (settingsDesc) settingsDesc.textContent = desc ? '* ' + desc : '';
     var homeEl = document.getElementById('userName');
     if (homeEl) homeEl.textContent = name;
+    var homeStar = document.getElementById('userStar');
+    if (homeStar) homeStar.style.display = desc ? '' : 'none';
     var homeDesc = document.getElementById('userDesc');
-    if (homeDesc) homeDesc.textContent = desc || '';
+    if (homeDesc) homeDesc.textContent = desc ? '* ' + desc : '';
 }
 
 // ===== Constant Switching =====
@@ -153,6 +171,7 @@ function switchView(view) {
         constToggles.style.display = '';
         viewTitle.style.display = 'none';
         backBtn.style.display = 'none';
+        document.getElementById('charImage').src = randomImage('home');
     } else {
         constToggles.style.display = 'none';
         viewTitle.style.display = '';
@@ -364,7 +383,7 @@ function checkAnswer(selected, correct, digitsPerQuestion, start) {
     } else {
         var resultMessage = document.getElementById('resultMessage');
         resultMessage.innerHTML =
-            '<img src="images/04_no_battery.png" alt="틀렸습니다">' +
+            '<img src="' + randomImage('failure') + '" alt="틀렸습니다">' +
             '<div>틀렸습니다. 정답은 ' + correct + '입니다.</div>';
         resultMessage.className = 'result-msg show wrong';
         endMemorize();
@@ -413,7 +432,7 @@ function handleKeypadInput(digit) {
         if (currentPosition >= 1000) endMemorize();
     } else {
         resultMessage.innerHTML =
-            '<img src="images/04_no_battery.png" alt="틀렸습니다">' +
+            '<img src="' + randomImage('failure') + '" alt="틀렸습니다">' +
             '<div>틀렸습니다. 정답은 ' + expectedDigit + '입니다.</div>';
         resultMessage.className = 'result-msg show wrong';
         endMemorize();
@@ -467,8 +486,10 @@ function endMemorize() {
     var panel = document.getElementById('gameoverPanel');
     panel.classList.add('show');
 
+    var scoreImg = currentPosition >= 1000 ? randomImage('success') : randomImage('failure');
     document.getElementById('gameoverScore').innerHTML =
-        '<strong>' + currentPosition + '</strong>자리 · ' + ts;
+        '<img src="' + scoreImg + '" alt="">' +
+        '<div><strong>' + currentPosition + '</strong>자리 · ' + ts + '</div>';
 
     var recordNameInput = document.getElementById('recordName');
     recordNameInput.value = getUserName();
@@ -563,6 +584,7 @@ function displaySearchResults(searchString, results) {
     if (results.firstPosition === -1) {
         searchResult.innerHTML =
             '<div class="search-result-card">' +
+                '<img src="' + randomImage('not_found') + '" alt="못 찾음">' +
                 '<h4>검색 결과</h4>' +
                 '<p>검색어: <strong>' + searchString + '</strong></p>' +
                 '<p>' + constName + '의 백만자리 내에서 해당 숫자를 찾을 수 없습니다.</p>' +
@@ -594,6 +616,7 @@ function displaySearchResults(searchString, results) {
 
     searchResult.innerHTML =
         '<div class="search-result-card">' +
+            '<img src="' + randomImage('found') + '" alt="찾음">' +
             '<h4>검색 결과</h4>' +
             '<p>검색어: <strong>' + searchString + '</strong></p>' +
             '<p>최초 위치: 소숫점 이하 <strong>' + displayPosition.toLocaleString() + '</strong>번째 자리</p>' +
@@ -661,6 +684,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Restore constant
     switchConstant(activeConstKey);
     refreshUserName();
+    document.getElementById('charImage').src = randomImage('home');
 
     // URL hash navigation
     var hash = window.location.hash.replace('#', '');
