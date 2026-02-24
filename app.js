@@ -246,13 +246,14 @@ function switchView(view) {
 // ===== Records =====
 function getRecordsKey() { return activeConstKey + 'Records'; }
 
-function saveRecord(name, digits, time) {
+function saveRecord(name, digits, time, continues) {
     var records = getRecords();
     records.push({
         id: Date.now(),
         name: name || getUserName(),
         digits: digits,
         time: time,
+        continues: continues || 0,
         date: new Date().toISOString()
     });
     records.sort(function(a, b) { return b.digits - a.digits || a.time - b.time; });
@@ -288,7 +289,7 @@ function displayRecords() {
         return '<div class="record-item">' +
             '<div class="record-item-info">' +
                 '<div class="record-item-name">' + escapeHtml(record.name) + '</div>' +
-                '<div class="record-item-details">' + record.digits + '자리 | ' + ts + ' | ' + date + '</div>' +
+                '<div class="record-item-details">' + record.digits + '자리 | ' + ts + (record.continues ? ' | 이어서 ' + record.continues + '회' : '') + ' | ' + date + '</div>' +
             '</div>' +
             '<button class="btn-delete" onclick="deleteRecord(' + record.id + ')">삭제</button>' +
         '</div>';
@@ -313,6 +314,36 @@ function closeSettings() {
     document.getElementById('settingsModal').classList.remove('show');
     document.getElementById('nameEditPanel').classList.remove('show');
 }
+
+// ===== Theme =====
+var themeOption = document.getElementById('themeOption');
+var darkMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+function applyTheme(pref) {
+    if (pref === 'dark') {
+        document.documentElement.dataset.theme = 'dark';
+    } else if (pref === 'light') {
+        document.documentElement.dataset.theme = 'light';
+    } else {
+        // system
+        document.documentElement.dataset.theme = darkMediaQuery.matches ? 'dark' : 'light';
+    }
+}
+
+darkMediaQuery.addEventListener('change', function() {
+    if ((getSetting('piThemeOption') || 'system') === 'system') {
+        applyTheme('system');
+    }
+});
+
+var savedTheme = getSetting('piThemeOption') || 'system';
+themeOption.value = savedTheme;
+applyTheme(savedTheme);
+
+themeOption.addEventListener('change', function() {
+    setSetting('piThemeOption', themeOption.value);
+    applyTheme(themeOption.value);
+});
 
 // ===== Options =====
 var startOption = document.getElementById('startOption');
@@ -344,6 +375,7 @@ var currentPosition = 0;
 var startTime = null;
 var timerInterval = null;
 var userInput = '';
+var continueCount = 0;
 
 function initMemorize() {
     var mode = modeOption.value;
@@ -358,6 +390,7 @@ function initMemorize() {
     currentMode = mode;
     currentPosition = 0;
     userInput = '';
+    continueCount = 0;
     startTime = Date.now();
 
     if (timerInterval) clearInterval(timerInterval);
@@ -445,6 +478,7 @@ function initKeypadMode(start) {
     var resultMessage = document.getElementById('keypadResultMessage');
     resultMessage.classList.remove('show');
 
+    document.getElementById('keypad').classList.remove('hidden');
     display.textContent = getConst().intPart + '.';
     updateKeypadDebug();
 }
@@ -484,6 +518,7 @@ function handleKeypadInput(digit) {
             '<img src="' + randomImage('failure') + '" alt="틀렸습니다">' +
             '<div>틀렸습니다. 정답은 ' + expectedDigit + '입니다.</div>';
         resultMessage.className = 'result-msg show wrong';
+        document.getElementById('keypad').classList.add('hidden');
         endMemorize();
     }
 }
@@ -546,7 +581,7 @@ function endMemorize() {
     recordNameInput.value = getUserName();
 
     document.getElementById('saveRecordBtn').onclick = function() {
-        saveRecord(recordNameInput.value, currentPosition, lastElapsed);
+        saveRecord(recordNameInput.value, currentPosition, lastElapsed, continueCount);
         displayRecords();
         document.getElementById('saveRecordBtn').textContent = '저장됨';
         document.getElementById('saveRecordBtn').disabled = true;
@@ -560,6 +595,7 @@ function retryMemorize() {
 }
 
 function continueMemorize() {
+    continueCount++;
     var savedPosition = currentPosition;
     var mode = modeOption.value;
     var start = startOption.value;
@@ -574,6 +610,7 @@ function continueMemorize() {
 
     if (mode === 'keypad') {
         // Keypad: just resume, display is already correct
+        document.getElementById('keypad').classList.remove('hidden');
         userInput = getDigits1000().substring(2, 2 + savedPosition);
     } else {
         var digitsPerQuestion = parseInt(mode.replace('multiple', ''));
