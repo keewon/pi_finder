@@ -1,10 +1,11 @@
 // ===== Character Images =====
 var CHAR_IMAGES = {
-    home:      ['01_hello.png','05_please.png','07_question.png','09_dnd.png','10_busy.png','22_letsplay.png','24_thanks.png','27_at_home.png'],
+    home:      ['01_hello.png','05_please.png','22_letsplay.png','24_thanks.png','27_at_home.png'],
     success:   ['02_congrat.png','11_heart.png','15_surprise.png','18_okay.png','21_exciting.png'],
     failure:   ['03_tears.png','04_no_battery.png','08_volcano.png','16_dizzy.png','23_annoying.png','25_depressed.png','28_cheer_up.png'],
     found:     ['13_yes.png','17_funny.png','19_awesome.png','30_idea.png'],
-    not_found: ['06_boring.png','12_sleep.png','14_no.png','20_well.png','26_yawn.png','29_hmm.png']
+    not_found: ['06_boring.png','12_sleep.png','14_no.png','20_well.png','26_yawn.png','29_hmm.png'],
+    search:    ['07_question.png','09_dnd.png','10_busy.png']
 };
 
 function randomImage(category) {
@@ -190,6 +191,7 @@ function switchView(view) {
     if (view === 'search') {
         var el = document.getElementById('searchConstSymbol');
         if (el) el.textContent = getConst().symbol;
+        document.getElementById('searchCharImage').src = randomImage('search');
     }
     if (view === 'records') displayRecords();
 }

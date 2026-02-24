@@ -554,6 +554,13 @@ input, select { font-family: inherit; }
     color: var(--text-sub);
     line-height: 1.6;
     margin-bottom: 16px;
+    text-align: center;
+}
+
+.search-desc img {
+    display: block;
+    max-width: 120px;
+    margin: 0 auto 8px;
 }
 
 .search-desc span {
