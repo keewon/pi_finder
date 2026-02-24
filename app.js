@@ -15,26 +15,6 @@ function getDigits1000() { return getDigits().substring(0, 1002); }
 function setSetting(key, value) { localStorage.setItem(key, value); }
 function getSetting(key) { return localStorage.getItem(key); }
 
-// Legacy cookie migration
-function getCookie(name) {
-    var nameEQ = name + '=';
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i].trimStart();
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length);
-    }
-    return null;
-}
-
-function migrateCookie(key) {
-    if (!localStorage.getItem(key)) {
-        var val = getCookie(key);
-        if (val) localStorage.setItem(key, val);
-    }
-}
-migrateCookie('piUserName');
-migrateCookie('piStartOption');
-migrateCookie('piModeOption');
 
 // ===== Random Name =====
 var adjectives = [
