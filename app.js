@@ -21,6 +21,49 @@ const CONSTANTS = {
     phi:   { key: 'phi',   name: 'φ',   symbol: 'φ',  intPart: '1', getDigits: function() { return PHI_DIGITS; } }
 };
 
+// ===== Constant Diagrams (inline SVG) =====
+const CONST_DIAGRAMS = {
+    pi: `<svg viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="100" cy="72" r="52" stroke="currentColor" stroke-width="2"/>
+  <line x1="48" y1="72" x2="152" y2="72" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <circle cx="100" cy="72" r="3.5" fill="currentColor"/>
+  <circle cx="48" cy="72" r="3" fill="currentColor"/>
+  <circle cx="152" cy="72" r="3" fill="currentColor"/>
+  <text x="100" y="155" text-anchor="middle" fill="currentColor" font-size="16" font-style="italic" font-family="Georgia,serif">C = 2πr</text>
+</svg>`,
+    e: `<svg viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <line x1="20" y1="125" x2="175" y2="125" stroke="currentColor" stroke-width="1.2"/>
+  <polygon points="175,125 168,122 168,128" fill="currentColor"/>
+  <line x1="55" y1="140" x2="55" y2="8" stroke="currentColor" stroke-width="1.2"/>
+  <polygon points="55,8 52,15 58,15" fill="currentColor"/>
+  <path d="M 22 124 C 50 122 82 102 135 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <circle cx="55" cy="115" r="2.5" fill="currentColor"/>
+  <line x1="52" y1="115" x2="58" y2="115" stroke="currentColor" stroke-width="1.2"/>
+  <text x="45" y="119" text-anchor="end" fill="currentColor" font-size="11" font-family="Georgia,serif">1</text>
+  <text x="48" y="138" text-anchor="end" fill="currentColor" font-size="11" font-family="Georgia,serif">O</text>
+  <text x="100" y="166" text-anchor="middle" fill="currentColor" font-size="16" font-style="italic" font-family="Georgia,serif">y = eˣ</text>
+</svg>`,
+    sqrt2: `<svg viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="60" y="15" width="80" height="80" stroke="currentColor" stroke-width="2" fill="none"/>
+  <line x1="60" y1="95" x2="140" y2="15" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4"/>
+  <path d="M 72 95 L 72 83 L 60 83" stroke="currentColor" stroke-width="1.5" fill="none"/>
+  <text x="46" y="62" text-anchor="middle" fill="currentColor" font-size="14" font-family="Georgia,serif">1</text>
+  <text x="100" y="112" text-anchor="middle" fill="currentColor" font-size="14" font-family="Georgia,serif">1</text>
+  <text x="112" y="48" fill="currentColor" font-size="13" font-family="Georgia,serif">√2</text>
+  <text x="100" y="152" text-anchor="middle" fill="currentColor" font-size="15" font-style="italic" font-family="Georgia,serif">a² + b² = c²</text>
+</svg>`,
+    phi: `<svg viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="35" y="25" width="130" height="80" stroke="currentColor" stroke-width="2" fill="none"/>
+  <line x1="85" y1="25" x2="85" y2="105" stroke="currentColor" stroke-width="1" stroke-opacity="0.4"/>
+  <line x1="35" y1="55" x2="85" y2="55" stroke="currentColor" stroke-width="1" stroke-opacity="0.4"/>
+  <line x1="65" y1="25" x2="65" y2="55" stroke="currentColor" stroke-width="1" stroke-opacity="0.4"/>
+  <line x1="65" y1="45" x2="85" y2="45" stroke="currentColor" stroke-width="1" stroke-opacity="0.4"/>
+  <line x1="75" y1="45" x2="75" y2="55" stroke="currentColor" stroke-width="1" stroke-opacity="0.4"/>
+  <path d="M 165 25 A 80 80 0 0 1 85 105 A 50 50 0 0 1 35 55 A 30 30 0 0 1 65 25 A 20 20 0 0 1 85 45 A 10 10 0 0 1 75 55" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <text x="100" y="148" text-anchor="middle" fill="currentColor" font-size="15" font-style="italic" font-family="Georgia,serif">φ = (1+√5)/2</text>
+</svg>`
+};
+
 let activeConstKey = localStorage.getItem('activeConst') || 'pi';
 
 function getConst() { return CONSTANTS[activeConstKey]; }
@@ -145,6 +188,7 @@ function switchConstant(key) {
     });
 
     document.getElementById('homeTitle').textContent = getConst().symbol;
+    document.getElementById('constDiagram').innerHTML = CONST_DIAGRAMS[key];
     updateDigitsFlow();
 
     var intpartOption = document.getElementById('intpartOption');
@@ -176,7 +220,6 @@ function switchView(view) {
         constToggles.style.display = '';
         viewTitle.style.display = 'none';
         backBtn.style.display = 'none';
-        document.getElementById('charImage').src = randomImage('home');
     } else {
         constToggles.style.display = 'none';
         viewTitle.style.display = '';
@@ -692,7 +735,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Restore constant
     switchConstant(activeConstKey);
     refreshUserName();
-    document.getElementById('charImage').src = randomImage('home');
 
     // URL hash navigation
     var hash = window.location.hash.replace('#', '');

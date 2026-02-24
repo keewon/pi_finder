@@ -12,8 +12,8 @@
     --border: #e2e8f0;
     --accent-pi: #4f46e5;
     --accent-e: #059669;
-    --accent-sqrt2: #d97706;
-    --accent-phi: #e11d48;
+    --accent-sqrt2: #e11d48;
+    --accent-phi: #b8860b;
     --correct: #16a34a;
     --wrong: #dc2626;
     --mono: 'SF Mono', 'Menlo', 'Consolas', monospace;
@@ -160,12 +160,12 @@ input, select { font-family: inherit; }
 
 .penguin {
     margin-bottom: 4px;
-    animation: float 3s ease-in-out infinite;
 }
 
-.penguin img {
-    height: 140px;
-    width: auto;
+.penguin svg {
+    width: 160px;
+    height: auto;
+    color: var(--accent);
 }
 
 @keyframes float {
