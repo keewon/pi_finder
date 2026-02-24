@@ -182,12 +182,19 @@ input, select { font-family: inherit; }
 .home-greeting {
     font-size: 0.88rem;
     color: var(--text-sub);
-    margin-bottom: 12px;
+    margin-bottom: 2px;
 }
 
 .home-greeting .nickname {
     color: var(--accent);
     font-weight: 600;
+}
+
+.home-user-desc {
+    font-size: 0.75rem;
+    color: var(--text-sub);
+    margin-bottom: 12px;
+    min-height: 1.1em;
 }
 
 /* Flowing digits */
@@ -664,6 +671,13 @@ input, select { font-family: inherit; }
 
 .setting-value span { flex: 1; }
 .setting-value button { color: var(--accent); font-size: 0.85rem; font-weight: 600; padding: 4px 8px; }
+
+.setting-user-desc {
+    font-size: 0.75rem;
+    color: var(--text-sub);
+    padding: 0 12px 4px;
+    min-height: 1.1em;
+}
 
 .setting-name-edit {
     display: none;

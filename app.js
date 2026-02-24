@@ -28,19 +28,60 @@ var adjectives = [
 ];
 
 var mathematicians = [
-    '피타고라스','유클리드','아르키메데스','아폴로니우스','히파티아',
-    '피보나치','데카르트','페르마','파스칼',
-    '뉴턴','라이프니츠','오일러','가우스','리만','푸리에',
-    '갈루아','아벨','라그랑주','라플라스','푸앵카레',
-    '힐베르트','괴델','튜링','폰 노이만','칸토어',
-    '소피 제르맹','에미 뇌터','마리아 아녜시','에이다 러브레이스',
-    '최석정','홍대용'
+    // π 관련
+    { name: '유휘',             desc: '3072각형으로 π ≈ 3.14159 계산' },
+    { name: '장형',             desc: 'π ≈ √10 으로 근사' },
+    { name: '조충지',            desc: 'π ≈ 355/113, 소수점 7자리까지 정확' },
+    { name: '뤼돌프 판 쾰런',    desc: 'π 소수점 35자리까지 계산, 뤼돌프 수' },
+    { name: '샹크스',            desc: 'π 소수점 707자리 계산 (527자리까지 정확)' },
+    { name: '윌리엄 존스',       desc: 'π 기호를 최초로 사용' },
+    { name: '람베르트',          desc: 'π가 무리수임을 증명' },
+    { name: '린데만',            desc: 'π가 초월수임을 증명' },
+    { name: '레오나르도 다빈치',  desc: '원적문제 연구' },
+    { name: '에우클레이데스',     desc: '원의 넓이와 지름² 비례 증명' },
+    { name: '브라우어르',        desc: 'π의 정규성 연구' },
+    { name: '가네다 야스마사',    desc: '컴퓨터로 π 1조 자리 계산' },
+    { name: '곤도 시게루',       desc: 'π 10조 자리 계산' },
+    { name: '페터 트뤼프',       desc: 'π 22.4조 자리 계산 (2016 기록)' },
+    { name: '파인만',            desc: '파인만 포인트 (762자리째부터 9 여섯 개)' },
+    { name: '아리스토텔레스',     desc: '원적문제 불가능성 언급' },
+    // π + e 공통
+    { name: '오일러',            desc: 'e^(iπ)+1=0, π·e 기호 대중화' },
+    { name: '라이프니츠',        desc: 'π 급수 발견, e를 최초로 상수로 표현' },
+    // e 관련
+    { name: '야코프 베르누이',    desc: 'e의 극한 정의 발견 (복리 이자 계산)' },
+    { name: '존 네이피어',       desc: '로그표 발간, e 값의 최초 계산 기록' },
+    { name: '윌리엄 오트레드',    desc: '네이피어 로그표로 계산자 제작' },
+    { name: '샤를 에르미트',     desc: 'e가 초월수임을 증명' },
+    { name: '로저 코츠',        desc: '자연로그와 삼각함수의 관계 발견' },
+    { name: '브룩 테일러',       desc: '테일러 급수 증명 (e 계산에 활용)' },
+    { name: '볼츠만',           desc: '엔트로피와 자연로그의 관계 발견' },
+    { name: '아다마르',          desc: '자연로그 이용한 소수 정리 증명' },
+    { name: '발레푸생',          desc: '소수 정리 독립 증명 (아다마르와 동시)' },
+    { name: '아르강',            desc: '복소평면 위의 점으로 복소수 표현' },
+    // π + √2 공통
+    { name: '아르키메데스',      desc: 'π 근삿값 최초 계산, 제곱근 풀이법 저술' },
+    // √2 관련
+    { name: '피타고라스',        desc: '피타고라스 학파, √2의 무리수 발견 계기' },
+    { name: '히파소스',          desc: '√2가 무리수임을 최초로 증명' },
+    { name: '콰리즈미',          desc: '제곱근을 자드르(뿌리)로 명명' },
+    { name: '이븐 알야사민',     desc: '제곱근 기호를 사용한 최초의 문헌' },
+    { name: '레기오몬타누스',     desc: '대문자 R을 제곱근 기호로 사용' },
+    { name: '크리스토프 루돌프',  desc: '현대 근호 √를 최초로 사용' },
+    { name: '헤론',             desc: '제곱근 근삿값 계산법 제시' },
 ];
 
 function generateRandomName() {
     var adj = adjectives[Math.floor(Math.random() * adjectives.length)];
-    var math = mathematicians[Math.floor(Math.random() * mathematicians.length)];
-    return adj + ' ' + math;
+    var m = mathematicians[Math.floor(Math.random() * mathematicians.length)];
+    return adj + ' ' + m.name;
+}
+
+function getMathematicianDesc(userName) {
+    for (var i = 0; i < mathematicians.length; i++) {
+        if (userName.endsWith(mathematicians[i].name)) return mathematicians[i].desc;
+    }
+    return null;
 }
 
 function getUserName() {
@@ -57,10 +98,16 @@ function setUserName(name) {
 }
 
 function refreshUserName() {
+    var name = getUserName();
+    var desc = getMathematicianDesc(name);
     var el = document.getElementById('settingsUserName');
-    if (el) el.textContent = getUserName();
+    if (el) el.textContent = name;
+    var settingsDesc = document.getElementById('settingsUserDesc');
+    if (settingsDesc) settingsDesc.textContent = desc || '';
     var homeEl = document.getElementById('userName');
-    if (homeEl) homeEl.textContent = getUserName();
+    if (homeEl) homeEl.textContent = name;
+    var homeDesc = document.getElementById('userDesc');
+    if (homeDesc) homeDesc.textContent = desc || '';
 }
 
 // ===== Constant Switching =====
