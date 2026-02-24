@@ -776,6 +776,34 @@ input, select { font-family: inherit; }
 /* ===== Utilities ===== */
 .hidden { display: none !important; }
 
+/* ===== Dark Mode ===== */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #0f172a;
+        --card: #1e293b;
+        --shadow: 0 1px 3px rgba(0,0,0,0.4);
+        --text: #e2e8f0;
+        --text-sub: #94a3b8;
+        --border: #334155;
+        --accent-pi: #818cf8;
+        --accent-e: #34d399;
+        --accent-sqrt2: #fb7185;
+        --accent-phi: #fbbf24;
+        --correct: #22c55e;
+        --wrong: #ef4444;
+    }
+
+    .keypad-key:hover { background: #334155; }
+    .keypad-key.delete { background: #3b1113; border-color: #7f1d1d; }
+    .keypad-key.delete:hover { background: #501418; }
+    .result-msg.correct { background: #052e16; }
+    .result-msg.wrong { background: #350a0a; }
+    .record-item .btn-delete { background: #3b1113; }
+    .record-item .btn-delete:hover { background: #501418; }
+    .search-context mark { background: #854d0e; color: #fef9c3; }
+    .modal-overlay { background: rgba(0,0,0,0.6); }
+}
+
 /* ===== Responsive ===== */
 @media (min-width: 480px) {
     body {
