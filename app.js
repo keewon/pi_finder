@@ -486,10 +486,12 @@ function endMemorize() {
     var panel = document.getElementById('gameoverPanel');
     panel.classList.add('show');
 
-    var scoreImg = currentPosition >= 1000 ? randomImage('success') : randomImage('failure');
-    document.getElementById('gameoverScore').innerHTML =
-        '<img src="' + scoreImg + '" alt="">' +
-        '<div><strong>' + currentPosition + '</strong>자리 · ' + ts + '</div>';
+    var scoreHtml = '';
+    if (currentPosition >= 1000) {
+        scoreHtml = '<img src="' + randomImage('success') + '" alt="">';
+    }
+    scoreHtml += '<div><strong>' + currentPosition + '</strong>자리 · ' + ts + '</div>';
+    document.getElementById('gameoverScore').innerHTML = scoreHtml;
 
     var recordNameInput = document.getElementById('recordName');
     recordNameInput.value = getUserName();
