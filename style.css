@@ -13,6 +13,7 @@
     --accent-pi: #4f46e5;
     --accent-e: #059669;
     --accent-sqrt2: #d97706;
+    --accent-phi: #e11d48;
     --correct: #16a34a;
     --wrong: #dc2626;
     --mono: 'SF Mono', 'Menlo', 'Consolas', monospace;
@@ -50,6 +51,7 @@ input, select { font-family: inherit; }
 .app[data-const="pi"]    { --accent: var(--accent-pi); }
 .app[data-const="e"]     { --accent: var(--accent-e); }
 .app[data-const="sqrt2"] { --accent: var(--accent-sqrt2); }
+.app[data-const="phi"]   { --accent: var(--accent-phi); }
 
 /* ===== Header ===== */
 .header {

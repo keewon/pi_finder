@@ -17,7 +17,8 @@ function randomImage(category) {
 const CONSTANTS = {
     pi:    { key: 'pi',    name: 'Pi',  symbol: 'π',  intPart: '3', getDigits: function() { return PI_DIGITS; } },
     e:     { key: 'e',     name: 'e',   symbol: 'e',  intPart: '2', getDigits: function() { return E_DIGITS; } },
-    sqrt2: { key: 'sqrt2', name: '√2',  symbol: '√2', intPart: '1', getDigits: function() { return SQRT2_DIGITS; } }
+    sqrt2: { key: 'sqrt2', name: '√2',  symbol: '√2', intPart: '1', getDigits: function() { return SQRT2_DIGITS; } },
+    phi:   { key: 'phi',   name: 'φ',   symbol: 'φ',  intPart: '1', getDigits: function() { return PHI_DIGITS; } }
 };
 
 let activeConstKey = localStorage.getItem('activeConst') || 'pi';
@@ -53,7 +54,7 @@ var mathematicians = [
     { name: '람베르트',          desc: 'π가 무리수임을 증명' },
     { name: '린데만',            desc: 'π가 초월수임을 증명' },
     { name: '레오나르도 다빈치',  desc: '원적문제 연구' },
-    { name: '에우클레이데스',     desc: '원의 넓이와 지름² 비례 증명' },
+    { name: '에우클레이데스',     desc: '원의 넓이와 지름² 비례 증명, 원론에서 황금비 연구' },
     { name: '브라우어르',        desc: 'π의 정규성 연구' },
     { name: '가네다 야스마사',    desc: '컴퓨터로 π 1조 자리 계산' },
     { name: '곤도 시게루',       desc: 'π 10조 자리 계산' },
@@ -84,6 +85,9 @@ var mathematicians = [
     { name: '레기오몬타누스',     desc: '대문자 R을 제곱근 기호로 사용' },
     { name: '크리스토프 루돌프',  desc: '현대 근호 √를 최초로 사용' },
     { name: '헤론',             desc: '제곱근 근삿값 계산법 제시' },
+    // φ 관련
+    { name: '피보나치',          desc: '피보나치 수열, 극한값이 황금비' },
+    { name: '르 코르뷔지에',     desc: '황금비와 인체비례를 결합한 모듈러 고안' },
 ];
 
 function generateRandomName() {

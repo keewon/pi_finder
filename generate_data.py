@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate e-data.js and sqrt2-data.js with 1,000,000 decimal digits each."""
+"""Generate e-data.js, sqrt2-data.js and phi-data.js with 1,000,000 decimal digits each."""
 
 import mpmath
 
@@ -35,4 +35,5 @@ def generate_constant(name, var_name, value_func, num_digits=1_000_000):
 if __name__ == '__main__':
     generate_constant('e', 'E_DIGITS', lambda: mpmath.e)
     generate_constant('sqrt2', 'SQRT2_DIGITS', lambda: mpmath.sqrt(2))
+    generate_constant('phi', 'PHI_DIGITS', lambda: mpmath.phi)
     print("\nAll data files generated successfully!")
