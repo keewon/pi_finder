@@ -194,10 +194,7 @@ function switchConstant(key) {
 }
 
 function updateDigitsFlow() {
-    var raw = getDigits().substring(0, 82);
-    var spaced = raw.replace(/(\d{10})/g, '$1 ').trim();
-    var track = document.getElementById('digitsTrack');
-    track.textContent = spaced + '          ' + spaced + '          ';
+    document.getElementById('digitsTrack').textContent = getDigits().substring(0, 1500);
 }
 
 // ===== View Management =====

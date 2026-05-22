@@ -210,30 +210,38 @@ input, select { font-family: inherit; }
 
 .home-user-desc { margin-bottom: 12px; }
 
-/* Flowing digits */
+/* Background digits */
+#homeView {
+    position: relative;
+}
+
 .digits-flow {
-    width: 100%;
+    position: absolute;
+    inset: 0;
     overflow: hidden;
-    -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
-    mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
-    padding: 4px 0 12px;
+    pointer-events: none;
 }
 
 .digits-flow-track {
     font-family: var(--mono);
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     color: var(--accent);
-    white-space: nowrap;
-    display: inline-block;
-    animation: flow 30s linear infinite;
-    opacity: 0.38;
-    letter-spacing: 2px;
+    line-height: 1.85;
+    letter-spacing: 0.06em;
+    word-break: break-all;
+    white-space: normal;
+    opacity: 0.1;
+    display: block;
+    padding: 10px 14px;
 }
 
-@keyframes flow {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+.home-hero,
+.home-actions,
+#homeView > .footer {
+    position: relative;
+    z-index: 1;
 }
+
 
 /* Action buttons */
 .home-actions {
