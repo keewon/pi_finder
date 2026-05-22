@@ -4,7 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>수학 상수 외우기 & 찾기</title>
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=5">
+
+    <!-- SVG pencil filter (referenced by math diagrams) -->
+    <svg width="0" height="0" style="display:none" aria-hidden="true">
+        <defs>
+            <filter id="pencil-sketch" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.04 0.06" numOctaves="4" result="noise"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.4" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
 </head>
 <body>
     <div class="app" id="app" data-const="pi">
@@ -56,10 +66,10 @@
                     <span class="action-label">찾기</span>
                     <span class="action-sub">Find</span>
                 </button>
-            </div>
-
-            <div class="home-records-link">
-                <button id="goRecords">기록 보기 →</button>
+                <button class="action-btn outline action-btn-full" id="goRecords">
+                    <span class="action-label">기록 보기</span>
+                    <span class="action-sub">Records</span>
+                </button>
             </div>
 
             <footer class="footer">
@@ -165,14 +175,9 @@
                     <div class="setting-label">사용자 이름</div>
                     <div class="setting-value">
                         <span><span id="settingsUserName"></span><sup class="footnote-star" id="settingsUserStar">*</sup></span>
-                        <button id="editNameBtn">변경</button>
                         <button id="randomNameBtn">랜덤</button>
                     </div>
                     <div class="setting-user-desc" id="settingsUserDesc"></div>
-                    <div class="setting-name-edit" id="nameEditPanel">
-                        <input type="text" id="nameInput" placeholder="이름 입력">
-                        <button class="btn btn-primary btn-sm" id="saveNameBtn">저장</button>
-                    </div>
                 </div>
                 <div class="setting-group">
                     <div class="setting-label">시작 위치</div>

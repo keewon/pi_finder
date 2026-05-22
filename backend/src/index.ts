@@ -13,6 +13,8 @@ const VALID_PERIODS = new Set(['all', 'weekly', 'monthly']);
 const SUSPICIOUS_DIGITS_PER_SEC = 8;
 const RATE_LIMIT_PER_DAY = 20;
 
+const VALID_MODES = new Set(['keypad','multiple2','multiple3','multiple4','multiple5','multiple6','multiple7','multiple8','multiple9','multiple10']);
+
 interface RecordRow {
   id: number;
   uid: string;
@@ -21,6 +23,7 @@ interface RecordRow {
   time: number;
   continues: number;
   const_key: string;
+  mode: string;
   suspicious: number;
   created_at: string;
 }
@@ -62,7 +65,7 @@ export default {
 
 async function handleCreate(request: Request, env: Env): Promise<Response> {
   const body = await request.json() as Record<string, unknown>;
-  const { uid, name, digits, time, continues, constKey } = body;
+  const { uid, name, digits, time, continues, constKey, mode } = body;
 
   if (typeof uid !== 'string' || uid.length < 1 || uid.length > 64)
     return json({ error: 'Invalid uid' }, 400);
@@ -76,6 +79,8 @@ async function handleCreate(request: Request, env: Env): Promise<Response> {
     return json({ error: 'Invalid continues' }, 400);
   if (typeof constKey !== 'string' || !VALID_CONST_KEYS.has(constKey))
     return json({ error: 'Invalid constKey' }, 400);
+  if (typeof mode !== 'string' || !VALID_MODES.has(mode))
+    return json({ error: 'Invalid mode' }, 400);
 
   // 하루 제출 횟수 제한
   const rateRow = await env.DB.prepare(
@@ -90,9 +95,9 @@ async function handleCreate(request: Request, env: Env): Promise<Response> {
   const suspicious = isSuspicious(digits, time) ? 1 : 0;
 
   const result = await env.DB.prepare(
-    `INSERT INTO records (uid, name, digits, time, continues, const_key, suspicious)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`
-  ).bind(uid, name, digits, time, continues, constKey, suspicious).run();
+    `INSERT INTO records (uid, name, digits, time, continues, const_key, mode, suspicious)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+  ).bind(uid, name, digits, time, continues, constKey, mode, suspicious).run();
 
   return json({ id: result.meta.last_row_id, suspicious: suspicious === 1 }, 201);
 }
@@ -111,7 +116,7 @@ async function handleList(url: URL, env: Env): Promise<Response> {
   if (period === 'monthly') dateCondition = `AND created_at >= datetime('now', '-30 days')`;
 
   const { results } = await env.DB.prepare(
-    `SELECT id, uid, name, digits, time, continues, const_key, suspicious, created_at
+    `SELECT id, uid, name, digits, time, continues, const_key, mode, suspicious, created_at
      FROM records
      WHERE const_key = ?
        AND suspicious = 0

@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS records (
   time        INTEGER NOT NULL,
   continues   INTEGER NOT NULL DEFAULT 0,
   const_key   TEXT    NOT NULL,
+  mode        TEXT    NOT NULL DEFAULT '',
   suspicious  INTEGER NOT NULL DEFAULT 0,
   created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
 );

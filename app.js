@@ -88,7 +88,7 @@ function getDeviceUid() {
     return uid;
 }
 
-function saveRecordToServer(name, digits, time, continues) {
+function saveRecordToServer(name, digits, time, continues, mode) {
     return fetch(API_URL + '/records', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -98,7 +98,8 @@ function saveRecordToServer(name, digits, time, continues) {
             digits: digits,
             time: time,
             continues: continues,
-            constKey: activeConstKey
+            constKey: activeConstKey,
+            mode: mode
         })
     }).then(function(res) {
         return res.ok ? res.json() : null;
@@ -266,10 +267,10 @@ function switchView(view) {
     var viewTitle = document.getElementById('viewTitle');
     var backBtn = document.getElementById('backBtn');
 
-    if (view === 'home') {
+    if (view === 'home' || view === 'records') {
         constToggles.style.display = '';
         viewTitle.style.display = 'none';
-        backBtn.style.display = 'none';
+        backBtn.style.display = view === 'records' ? '' : 'none';
     } else {
         constToggles.style.display = 'none';
         viewTitle.style.display = '';
@@ -277,9 +278,8 @@ function switchView(view) {
         var titles = {
             memorize: '외우기 — ' + getConst().symbol,
             search: '찾기 — ' + getConst().symbol,
-            records: '기록 — ' + getConst().symbol
         };
-        viewTitle.textContent = titles[view];
+        viewTitle.textContent = titles[view] || '';
     }
 
     history.replaceState(null, '', view === 'home' ? location.pathname : '#' + view);
@@ -296,9 +296,16 @@ function switchView(view) {
 // ===== Records =====
 function getRecordsKey() { return activeConstKey + 'Records'; }
 
+function formatMode(mode) {
+    if (!mode) return '';
+    if (mode === 'keypad') return '키패드';
+    return mode.replace('multiple', '') + '자리';
+}
+
 function saveRecord(name, digits, time, continues) {
     var resolvedName = name || getUserName();
     var localId = Date.now();
+    var mode = currentMode || '';
     var records = getRecords();
     records.push({
         id: localId,
@@ -306,13 +313,14 @@ function saveRecord(name, digits, time, continues) {
         digits: digits,
         time: time,
         continues: continues || 0,
+        mode: mode,
         date: new Date().toISOString(),
         serverId: null
     });
     records.sort(function(a, b) { return b.digits - a.digits || a.time - b.time; });
     localStorage.setItem(getRecordsKey(), JSON.stringify(records));
 
-    saveRecordToServer(resolvedName, digits, time, continues || 0).then(function(result) {
+    saveRecordToServer(resolvedName, digits, time, continues || 0, mode).then(function(result) {
         if (!result || !result.id) return;
         var recs = getRecords();
         var rec = recs.find(function(r) { return r.id === localId; });
@@ -375,7 +383,7 @@ function displayLocalRecords() {
         return '<div class="record-item">' +
             '<div class="record-item-info">' +
                 '<div class="record-item-name">' + escapeHtml(record.name) + '</div>' +
-                '<div class="record-item-details">' + record.digits + '자리 | ' + ts + (record.continues ? ' | 이어서 ' + record.continues + '회' : '') + ' | ' + date + '</div>' +
+                '<div class="record-item-details">' + record.digits + '자리' + (record.mode ? ' · ' + formatMode(record.mode) : '') + ' | ' + ts + (record.continues ? ' | 이어서 ' + record.continues + '회' : '') + ' | ' + date + '</div>' +
             '</div>' +
             '<button class="btn-delete" onclick="deleteRecord(' + record.id + ')">삭제</button>' +
         '</div>';
@@ -411,7 +419,7 @@ function displayLeaderboard(period) {
                 '<div class="record-item-rank">' + rankLabel + '</div>' +
                 '<div class="record-item-info">' +
                     '<div class="record-item-name">' + escapeHtml(record.name) + meTag + '</div>' +
-                    '<div class="record-item-details">' + record.digits + '자리 | ' + ts + (record.continues ? ' | 이어서 ' + record.continues + '회' : '') + ' | ' + date + '</div>' +
+                    '<div class="record-item-details">' + record.digits + '자리' + (record.mode ? ' · ' + formatMode(record.mode) : '') + ' | ' + ts + (record.continues ? ' | 이어서 ' + record.continues + '회' : '') + ' | ' + date + '</div>' +
                 '</div>' +
             '</div>';
         }).join('');
@@ -434,7 +442,6 @@ function openSettings() {
 
 function closeSettings() {
     document.getElementById('settingsModal').classList.remove('show');
-    document.getElementById('nameEditPanel').classList.remove('show');
 }
 
 // ===== Theme =====
@@ -704,9 +711,10 @@ function endMemorize() {
 
     document.getElementById('saveRecordBtn').onclick = function() {
         saveRecord(recordNameInput.value, currentPosition, lastElapsed, continueCount);
-        displayRecords();
-        document.getElementById('saveRecordBtn').textContent = '저장됨';
-        document.getElementById('saveRecordBtn').disabled = true;
+        var btn = document.getElementById('saveRecordBtn');
+        btn.textContent = '기록 보기';
+        btn.disabled = false;
+        btn.onclick = function() { switchView('records'); };
     };
     document.getElementById('saveRecordBtn').textContent = '기록 저장';
     document.getElementById('saveRecordBtn').disabled = false;
@@ -864,29 +872,8 @@ document.getElementById('settingsModal').addEventListener('click', function(e) {
     if (e.target === e.currentTarget) closeSettings();
 });
 
-// Name editing
-document.getElementById('editNameBtn').addEventListener('click', function() {
-    var panel = document.getElementById('nameEditPanel');
-    panel.classList.toggle('show');
-    if (panel.classList.contains('show')) document.getElementById('nameInput').focus();
-});
-
-document.getElementById('saveNameBtn').addEventListener('click', function() {
-    var name = document.getElementById('nameInput').value.trim();
-    if (name) {
-        setUserName(name);
-        document.getElementById('nameInput').value = '';
-        document.getElementById('nameEditPanel').classList.remove('show');
-    }
-});
-
-document.getElementById('nameInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') document.getElementById('saveNameBtn').click();
-});
-
 document.getElementById('randomNameBtn').addEventListener('click', function() {
     setUserName(generateRandomName());
-    document.getElementById('nameEditPanel').classList.remove('show');
 });
 
 // Records tabs
@@ -895,7 +882,14 @@ document.querySelectorAll('.tab-btn').forEach(function(btn) {
 });
 
 // ===== Init =====
+var IS_DEV = location.hostname === 'localhost' || location.protocol === 'file:';
+
 document.addEventListener('DOMContentLoaded', function() {
+    if (!IS_DEV) {
+        document.querySelectorAll('.debug-answer').forEach(function(el) {
+            el.style.display = 'none';
+        });
+    }
     // Restore constant
     switchConstant(activeConstKey);
     refreshUserName();
