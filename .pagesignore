@@ -1,0 +1,6 @@
+backend/
+.git/
+.DS_Store
+generate_data.py
+.gitignore
+.pagesignore

@@ -74,6 +74,54 @@ function getDigits1000() { return getDigits().substring(0, 1002); }
 function setSetting(key, value) { localStorage.setItem(key, value); }
 function getSetting(key) { return localStorage.getItem(key); }
 
+// ===== API =====
+var API_URL = (location.hostname === 'localhost' || location.protocol === 'file:')
+    ? 'http://localhost:8787'
+    : 'https://pi-finder-api.acidblob.com';
+
+function getDeviceUid() {
+    var uid = getSetting('deviceUid');
+    if (!uid) {
+        uid = crypto.randomUUID();
+        setSetting('deviceUid', uid);
+    }
+    return uid;
+}
+
+function saveRecordToServer(name, digits, time, continues) {
+    return fetch(API_URL + '/records', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            uid: getDeviceUid(),
+            name: name,
+            digits: digits,
+            time: time,
+            continues: continues,
+            constKey: activeConstKey
+        })
+    }).then(function(res) {
+        return res.ok ? res.json() : null;
+    }).catch(function() { return null; });
+}
+
+function deleteRecordFromServer(serverId) {
+    return fetch(API_URL + '/records/' + serverId + '?uid=' + encodeURIComponent(getDeviceUid()), {
+        method: 'DELETE'
+    }).catch(function() {});
+}
+
+function fetchLeaderboard(period) {
+    var params = new URLSearchParams({
+        constKey: activeConstKey,
+        period: period,
+        uid: getDeviceUid(),
+        limit: '50'
+    });
+    return fetch(API_URL + '/records?' + params)
+        .then(function(res) { return res.ok ? res.json() : null; })
+        .catch(function() { return null; });
+}
 
 // ===== Random Name =====
 var adjectives = [
@@ -191,6 +239,8 @@ function switchConstant(key) {
     document.getElementById('constDiagram').innerHTML = CONST_DIAGRAMS[key];
     updateDigitsFlow();
 
+    if (activeView === 'records') displayRecords();
+
     var intpartOption = document.getElementById('intpartOption');
     if (intpartOption) intpartOption.textContent = getConst().intPart + '. 부터';
 }
@@ -247,17 +297,31 @@ function switchView(view) {
 function getRecordsKey() { return activeConstKey + 'Records'; }
 
 function saveRecord(name, digits, time, continues) {
+    var resolvedName = name || getUserName();
+    var localId = Date.now();
     var records = getRecords();
     records.push({
-        id: Date.now(),
-        name: name || getUserName(),
+        id: localId,
+        name: resolvedName,
         digits: digits,
         time: time,
         continues: continues || 0,
-        date: new Date().toISOString()
+        date: new Date().toISOString(),
+        serverId: null
     });
     records.sort(function(a, b) { return b.digits - a.digits || a.time - b.time; });
     localStorage.setItem(getRecordsKey(), JSON.stringify(records));
+
+    saveRecordToServer(resolvedName, digits, time, continues || 0).then(function(result) {
+        if (!result || !result.id) return;
+        var recs = getRecords();
+        var rec = recs.find(function(r) { return r.id === localId; });
+        if (rec) {
+            rec.serverId = result.id;
+            rec.suspicious = result.suspicious;
+            localStorage.setItem(getRecordsKey(), JSON.stringify(recs));
+        }
+    });
 }
 
 function getRecords() {
@@ -266,12 +330,34 @@ function getRecords() {
 }
 
 function deleteRecord(id) {
-    var records = getRecords().filter(function(r) { return r.id !== id; });
-    localStorage.setItem(getRecordsKey(), JSON.stringify(records));
+    var records = getRecords();
+    var record = records.find(function(r) { return r.id === id; });
+    if (record && record.serverId) {
+        deleteRecordFromServer(record.serverId);
+    }
+    localStorage.setItem(getRecordsKey(), JSON.stringify(records.filter(function(r) { return r.id !== id; })));
+    displayRecords();
+}
+
+var activeTab = 'mine';
+
+function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.tab === tab);
+    });
     displayRecords();
 }
 
 function displayRecords() {
+    if (activeTab === 'mine') {
+        displayLocalRecords();
+    } else {
+        displayLeaderboard(activeTab);
+    }
+}
+
+function displayLocalRecords() {
     var records = getRecords();
     var list = document.getElementById('recordsList');
 
@@ -294,6 +380,42 @@ function displayRecords() {
             '<button class="btn-delete" onclick="deleteRecord(' + record.id + ')">삭제</button>' +
         '</div>';
     }).join('');
+}
+
+function displayLeaderboard(period) {
+    var list = document.getElementById('recordsList');
+    list.innerHTML = '<div class="empty-msg">불러오는 중...</div>';
+
+    fetchLeaderboard(period).then(function(records) {
+        if (!records) {
+            list.innerHTML = '<div class="empty-msg">서버에 연결할 수 없습니다.</div>';
+            return;
+        }
+        if (records.length === 0) {
+            list.innerHTML = '<div class="empty-msg">기록이 없습니다.</div>';
+            return;
+        }
+
+        var myUid = getDeviceUid();
+        list.innerHTML = records.map(function(record, index) {
+            var m = Math.floor(record.time / 60);
+            var s = record.time % 60;
+            var ts = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+            var date = new Date(record.created_at).toLocaleDateString('ko-KR');
+            var isMe = record.uid === myUid;
+            var meTag = isMe ? ' <span style="color:var(--accent);font-size:0.75rem">(나)</span>' : '';
+            var rank = index + 1;
+            var rankLabel = rank === 1 ? '1위' : rank === 2 ? '2위' : rank === 3 ? '3위' : rank + '.';
+
+            return '<div class="record-item' + (isMe ? ' record-item-me' : '') + '">' +
+                '<div class="record-item-rank">' + rankLabel + '</div>' +
+                '<div class="record-item-info">' +
+                    '<div class="record-item-name">' + escapeHtml(record.name) + meTag + '</div>' +
+                    '<div class="record-item-details">' + record.digits + '자리 | ' + ts + (record.continues ? ' | 이어서 ' + record.continues + '회' : '') + ' | ' + date + '</div>' +
+                '</div>' +
+            '</div>';
+        }).join('');
+    });
 }
 
 function escapeHtml(str) {
@@ -765,6 +887,11 @@ document.getElementById('nameInput').addEventListener('keydown', function(e) {
 document.getElementById('randomNameBtn').addEventListener('click', function() {
     setUserName(generateRandomName());
     document.getElementById('nameEditPanel').classList.remove('show');
+});
+
+// Records tabs
+document.querySelectorAll('.tab-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() { switchTab(btn.dataset.tab); });
 });
 
 // ===== Init =====

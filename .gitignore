@@ -52,6 +52,9 @@ node_modules/
 vendor/
 bower_components/
 
+# Wrangler local dev state (D1 SQLite, KV, etc.)
+.wrangler/
+
 # Cache
 .cache/
 .parcel-cache/

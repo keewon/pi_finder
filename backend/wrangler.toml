@@ -1,0 +1,13 @@
+name = "pi-finder-api"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+routes = [
+  { pattern = "pi-finder-api.acidblob.com", custom_domain = true }
+]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "pi-finder-db"
+database_id = "9e131ce1-3be2-449b-8093-55dc794ea215"
+
