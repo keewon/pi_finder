@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>수학 상수 외우기 & 찾기</title>
-    <link rel="stylesheet" href="style.css?v=5">
+    <title>수학 상수 외우기 &amp; 찾기</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=6">
 
     <!-- SVG pencil filter (referenced by math diagrams) -->
     <svg width="0" height="0" style="display:none" aria-hidden="true">
@@ -47,7 +50,7 @@
                 </div>
 
                 <div class="home-title" id="homeTitle">π</div>
-                <div class="home-greeting">안녕하세요, <span class="nickname" id="userName"></span><sup class="footnote-star" id="userStar">*</sup></div>
+                <div class="home-greeting"><span data-i18n="greeting">안녕하세요,</span> <span class="nickname" id="userName"></span><sup class="footnote-star" id="userStar">*</sup></div>
                 <div class="home-user-desc" id="userDesc"></div>
 
                 <!-- Flowing digits -->
@@ -59,15 +62,15 @@
             <!-- Action buttons -->
             <div class="home-actions">
                 <button class="action-btn primary" id="goMemorize">
-                    <span class="action-label">외우기</span>
+                    <span class="action-label" data-i18n="btn_memorize">외우기</span>
                     <span class="action-sub">Memorize</span>
                 </button>
                 <button class="action-btn outline" id="goSearch">
-                    <span class="action-label">찾기</span>
+                    <span class="action-label" data-i18n="btn_find">찾기</span>
                     <span class="action-sub">Find</span>
                 </button>
                 <button class="action-btn outline action-btn-full" id="goRecords">
-                    <span class="action-label">기록 보기</span>
+                    <span class="action-label" data-i18n="btn_records">기록 보기</span>
                     <span class="action-sub">Records</span>
                 </button>
             </div>
@@ -88,7 +91,7 @@
                 <div class="progress-section">
                     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
                     <div class="stats">
-                        <span><span id="currentPosition">0</span> / 1000자리</span>
+                        <span><span id="currentPosition">0</span><span data-i18n="stats_of_1000"> / 1000자리</span></span>
                         <span id="elapsedTime">00:00</span>
                     </div>
                 </div>
@@ -104,7 +107,7 @@
                 <div class="progress-section">
                     <div class="progress-bar"><div class="progress-fill" id="keypadProgressFill"></div></div>
                     <div class="stats">
-                        <span><span id="keypadCurrentPosition">0</span> / 1000자리</span>
+                        <span><span id="keypadCurrentPosition">0</span><span data-i18n="stats_of_1000"> / 1000자리</span></span>
                         <span id="keypadElapsedTime">00:00</span>
                     </div>
                 </div>
@@ -130,12 +133,12 @@
             <div class="gameover-panel" id="gameoverPanel">
                 <div class="gameover-score" id="gameoverScore"></div>
                 <div class="gameover-actions">
-                    <button class="btn btn-primary btn-block" id="retryBtn">다시하기</button>
-                    <button class="btn btn-outline btn-block" id="continueBtn">이어서하기</button>
+                    <button class="btn btn-primary btn-block" id="retryBtn" data-i18n="gameover_retry">다시하기</button>
+                    <button class="btn btn-outline btn-block" id="continueBtn" data-i18n="gameover_continue">이어서하기</button>
                 </div>
                 <div class="gameover-save">
-                    <input type="text" id="recordName" placeholder="이름">
-                    <button class="btn btn-primary btn-sm" id="saveRecordBtn">기록 저장</button>
+                    <input type="text" id="recordName" data-i18n-ph="name_placeholder" placeholder="이름">
+                    <button class="btn btn-primary btn-sm" id="saveRecordBtn" data-i18n="save_record">기록 저장</button>
                 </div>
             </div>
         </div>
@@ -144,11 +147,11 @@
         <div class="view" id="searchView">
             <div class="search-desc" id="searchDesc">
                 <img id="searchCharImage" src="images/search/07_question.png" alt="Search">
-                <div><span id="searchConstSymbol">π</span>의 백만 자리 안에서 원하는 숫자가 어디에 있는지 찾아보세요.</div>
+                <div id="searchDescText"></div>
             </div>
             <div class="search-input-group">
-                <input type="text" class="search-input" id="searchInput" placeholder="숫자 입력 (최대 8자리)" maxlength="8" inputmode="numeric" pattern="[0-9]*">
-                <button class="btn btn-primary" id="searchBtn">찾기</button>
+                <input type="text" class="search-input" id="searchInput" data-i18n-ph="search_placeholder" placeholder="숫자 입력 (최대 8자리)" maxlength="8" inputmode="numeric" pattern="[0-9]*">
+                <button class="btn btn-primary" id="searchBtn" data-i18n="search_btn">찾기</button>
             </div>
             <div class="search-result" id="searchResult"></div>
         </div>
@@ -156,10 +159,10 @@
         <!-- ===== RECORDS VIEW ===== -->
         <div class="view" id="recordsView">
             <div class="records-tabs" id="recordsTabs">
-                <button class="tab-btn active" data-tab="mine">내 기록</button>
-                <button class="tab-btn" data-tab="all">전체</button>
-                <button class="tab-btn" data-tab="monthly">이번 달</button>
-                <button class="tab-btn" data-tab="weekly">이번 주</button>
+                <button class="tab-btn active" data-tab="mine" data-i18n="tab_mine">내 기록</button>
+                <button class="tab-btn" data-tab="all" data-i18n="tab_all">전체</button>
+                <button class="tab-btn" data-tab="monthly" data-i18n="tab_monthly">이번 달</button>
+                <button class="tab-btn" data-tab="weekly" data-i18n="tab_weekly">이번 주</button>
             </div>
             <div class="records-list" id="recordsList"></div>
         </div>
@@ -168,26 +171,26 @@
         <div class="modal-overlay" id="settingsModal">
             <div class="modal">
                 <div class="modal-header">
-                    <h3>설정</h3>
+                    <h3 data-i18n="settings_title">설정</h3>
                     <button class="modal-close" id="settingsClose">×</button>
                 </div>
                 <div class="setting-group">
-                    <div class="setting-label">사용자 이름</div>
+                    <div class="setting-label" data-i18n="settings_username">사용자 이름</div>
                     <div class="setting-value">
                         <span><span id="settingsUserName"></span><sup class="footnote-star" id="settingsUserStar">*</sup></span>
-                        <button id="randomNameBtn">랜덤</button>
+                        <button id="randomNameBtn" data-i18n="btn_random">랜덤</button>
                     </div>
                     <div class="setting-user-desc" id="settingsUserDesc"></div>
                 </div>
                 <div class="setting-group">
-                    <div class="setting-label">시작 위치</div>
+                    <div class="setting-label" data-i18n="settings_startpos">시작 위치</div>
                     <select class="setting-select" id="startOption">
-                        <option value="decimal">소숫점 이하부터</option>
+                        <option value="decimal" data-i18n="opt_decimal">소숫점 이하부터</option>
                         <option value="intpart" id="intpartOption">3. 부터</option>
                     </select>
                 </div>
                 <div class="setting-group">
-                    <div class="setting-label">모드</div>
+                    <div class="setting-label" data-i18n="settings_mode">모드</div>
                     <select class="setting-select" id="modeOption">
                         <option value="keypad">키패드 입력 (1자리씩)</option>
                         <option value="multiple2">객관식 (2자리씩)</option>
@@ -202,11 +205,26 @@
                     </select>
                 </div>
                 <div class="setting-group">
-                    <div class="setting-label">테마</div>
+                    <div class="setting-label" data-i18n="settings_theme">테마</div>
                     <select class="setting-select" id="themeOption">
-                        <option value="system">시스템 설정</option>
-                        <option value="light">라이트</option>
-                        <option value="dark">다크</option>
+                        <option value="system" data-i18n="theme_system">시스템 설정</option>
+                        <option value="light" data-i18n="theme_light">라이트</option>
+                        <option value="dark" data-i18n="theme_dark">다크</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <div class="setting-label" data-i18n="settings_lang">언어</div>
+                    <select class="setting-select" id="langOption">
+                        <option value="ko">한국어</option>
+                        <option value="en">English</option>
+                        <option value="ja">日本語</option>
+                        <option value="zh">中文</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="pt">Português</option>
+                        <option value="ru">Русский</option>
+                        <option value="ar">العربية</option>
                     </select>
                 </div>
             </div>
@@ -217,6 +235,7 @@
     <script src="e-data.js"></script>
     <script src="sqrt2-data.js"></script>
     <script src="phi-data.js"></script>
-    <script src="app.js?v=3"></script>
+    <script src="i18n.js"></script>
+    <script src="app.js?v=4"></script>
 </body>
 </html>

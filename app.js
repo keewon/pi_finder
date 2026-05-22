@@ -125,72 +125,18 @@ function fetchLeaderboard(period) {
 }
 
 // ===== Random Name =====
-var adjectives = [
-    '우울한','방금 일어난','지각한','졸린','배고픈','피곤한',
-    '설레는','당황한','당황스러운','혼란스러운','기쁜','신난',
-    '심심한','지루한','재밌는','즐거운','행복한','슬픈',
-    '화난','짜증난','긴장한','불안한','평온한','차분한',
-    '흥분한','신기한','놀란','멍한','집중한',
-    '산만한','조용한','시끄러운','활발한','느린','빠른',
-    '게으른','부지런한','열심인','노력하는','포기한','도전하는'
-];
-
-var mathematicians = [
-    // π 관련
-    { name: '유휘',             desc: '3072각형으로 π ≈ 3.14159 계산' },
-    { name: '장형',             desc: 'π ≈ √10 으로 근사' },
-    { name: '조충지',            desc: 'π ≈ 355/113, 소수점 7자리까지 정확' },
-    { name: '뤼돌프 판 쾰런',    desc: 'π 소수점 35자리까지 계산, 뤼돌프 수' },
-    { name: '샹크스',            desc: 'π 소수점 707자리 계산 (527자리까지 정확)' },
-    { name: '윌리엄 존스',       desc: 'π 기호를 최초로 사용' },
-    { name: '람베르트',          desc: 'π가 무리수임을 증명' },
-    { name: '린데만',            desc: 'π가 초월수임을 증명' },
-    { name: '레오나르도 다빈치',  desc: '원적문제 연구' },
-    { name: '에우클레이데스',     desc: '원의 넓이와 지름² 비례 증명, 원론에서 황금비 연구' },
-    { name: '브라우어르',        desc: 'π의 정규성 연구' },
-    { name: '가네다 야스마사',    desc: '컴퓨터로 π 1조 자리 계산' },
-    { name: '곤도 시게루',       desc: 'π 10조 자리 계산' },
-    { name: '페터 트뤼프',       desc: 'π 22.4조 자리 계산 (2016 기록)' },
-    { name: '파인만',            desc: '파인만 포인트 (762자리째부터 9 여섯 개)' },
-    { name: '아리스토텔레스',     desc: '원적문제 불가능성 언급' },
-    // π + e 공통
-    { name: '오일러',            desc: 'e^(iπ)+1=0, π·e 기호 대중화' },
-    { name: '라이프니츠',        desc: 'π 급수 발견, e를 최초로 상수로 표현' },
-    // e 관련
-    { name: '야코프 베르누이',    desc: 'e의 극한 정의 발견 (복리 이자 계산)' },
-    { name: '존 네이피어',       desc: '로그표 발간, e 값의 최초 계산 기록' },
-    { name: '윌리엄 오트레드',    desc: '네이피어 로그표로 계산자 제작' },
-    { name: '샤를 에르미트',     desc: 'e가 초월수임을 증명' },
-    { name: '로저 코츠',        desc: '자연로그와 삼각함수의 관계 발견' },
-    { name: '브룩 테일러',       desc: '테일러 급수 증명 (e 계산에 활용)' },
-    { name: '볼츠만',           desc: '엔트로피와 자연로그의 관계 발견' },
-    { name: '아다마르',          desc: '자연로그 이용한 소수 정리 증명' },
-    { name: '발레푸생',          desc: '소수 정리 독립 증명 (아다마르와 동시)' },
-    { name: '아르강',            desc: '복소평면 위의 점으로 복소수 표현' },
-    // π + √2 공통
-    { name: '아르키메데스',      desc: 'π 근삿값 최초 계산, 제곱근 풀이법 저술' },
-    // √2 관련
-    { name: '피타고라스',        desc: '피타고라스 학파, √2의 무리수 발견 계기' },
-    { name: '히파소스',          desc: '√2가 무리수임을 최초로 증명' },
-    { name: '콰리즈미',          desc: '제곱근을 자드르(뿌리)로 명명' },
-    { name: '이븐 알야사민',     desc: '제곱근 기호를 사용한 최초의 문헌' },
-    { name: '레기오몬타누스',     desc: '대문자 R을 제곱근 기호로 사용' },
-    { name: '크리스토프 루돌프',  desc: '현대 근호 √를 최초로 사용' },
-    { name: '헤론',             desc: '제곱근 근삿값 계산법 제시' },
-    // φ 관련
-    { name: '피보나치',          desc: '피보나치 수열, 극한값이 황금비' },
-    { name: '르 코르뷔지에',     desc: '황금비와 인체비례를 결합한 모듈러 고안' },
-];
-
 function generateRandomName() {
-    var adj = adjectives[Math.floor(Math.random() * adjectives.length)];
-    var m = mathematicians[Math.floor(Math.random() * mathematicians.length)];
+    var adjs = getAdjectives();
+    var maths = getMathematicians();
+    var adj = adjs[Math.floor(Math.random() * adjs.length)];
+    var m = maths[Math.floor(Math.random() * maths.length)];
     return adj + ' ' + m.name;
 }
 
 function getMathematicianDesc(userName) {
-    for (var i = 0; i < mathematicians.length; i++) {
-        if (userName.endsWith(mathematicians[i].name)) return mathematicians[i].desc;
+    var maths = getMathematicians();
+    for (var i = 0; i < maths.length; i++) {
+        if (userName.endsWith(maths[i].name)) return maths[i].desc;
     }
     return null;
 }
@@ -241,9 +187,10 @@ function switchConstant(key) {
     updateDigitsFlow();
 
     if (activeView === 'records') displayRecords();
+    if (activeView === 'search') updateSearchDesc();
 
     var intpartOption = document.getElementById('intpartOption');
-    if (intpartOption) intpartOption.textContent = getConst().intPart + '. 부터';
+    if (intpartOption) intpartOption.textContent = t('intpart_opt', {n: getConst().intPart});
 }
 
 function updateDigitsFlow() {
@@ -276,8 +223,8 @@ function switchView(view) {
         viewTitle.style.display = '';
         backBtn.style.display = '';
         var titles = {
-            memorize: '외우기 — ' + getConst().symbol,
-            search: '찾기 — ' + getConst().symbol,
+            memorize: t('btn_memorize') + ' — ' + getConst().symbol,
+            search: t('btn_find') + ' — ' + getConst().symbol,
         };
         viewTitle.textContent = titles[view] || '';
     }
@@ -286,11 +233,16 @@ function switchView(view) {
 
     if (view === 'memorize') initMemorize();
     if (view === 'search') {
-        var el = document.getElementById('searchConstSymbol');
-        if (el) el.textContent = getConst().symbol;
         document.getElementById('searchCharImage').src = randomImage('search');
+        updateSearchDesc();
     }
     if (view === 'records') displayRecords();
+}
+
+// ===== Search Description =====
+function updateSearchDesc() {
+    var el = document.getElementById('searchDescText');
+    if (el) el.textContent = t('search_desc', {sym: getConst().symbol});
 }
 
 // ===== Records =====
@@ -298,8 +250,8 @@ function getRecordsKey() { return activeConstKey + 'Records'; }
 
 function formatMode(mode) {
     if (!mode) return '';
-    if (mode === 'keypad') return '키패드';
-    return mode.replace('multiple', '') + '자리';
+    if (mode === 'keypad') return t('digits_per', {n: 1});
+    return t('digits_per', {n: parseInt(mode.replace('multiple', ''))});
 }
 
 function saveRecord(name, digits, time, continues) {
@@ -370,7 +322,7 @@ function displayLocalRecords() {
     var list = document.getElementById('recordsList');
 
     if (records.length === 0) {
-        list.innerHTML = '<div class="empty-msg">기록이 없습니다.</div>';
+        list.innerHTML = '<div class="empty-msg">' + t('records_empty') + '</div>';
         return;
     }
 
@@ -378,29 +330,29 @@ function displayLocalRecords() {
         var m = Math.floor(record.time / 60);
         var s = record.time % 60;
         var ts = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-        var date = new Date(record.date).toLocaleDateString('ko-KR');
+        var date = new Date(record.date).toLocaleDateString(getLang());
 
         return '<div class="record-item">' +
             '<div class="record-item-info">' +
                 '<div class="record-item-name">' + escapeHtml(record.name) + '</div>' +
-                '<div class="record-item-details">' + record.digits + '자리' + (record.mode ? ' · ' + formatMode(record.mode) : '') + ' | ' + ts + (record.continues ? ' | 이어서 ' + record.continues + '회' : '') + ' | ' + date + '</div>' +
+                '<div class="record-item-details">' + t('digits_unit', {n: record.digits}) + (record.mode ? ' · ' + formatMode(record.mode) : '') + ' | ' + ts + (record.continues ? ' | ' + t('continues', {n: record.continues}) : '') + ' | ' + date + '</div>' +
             '</div>' +
-            '<button class="btn-delete" onclick="deleteRecord(' + record.id + ')">삭제</button>' +
+            '<button class="btn-delete" onclick="deleteRecord(' + record.id + ')">' + t('btn_delete') + '</button>' +
         '</div>';
     }).join('');
 }
 
 function displayLeaderboard(period) {
     var list = document.getElementById('recordsList');
-    list.innerHTML = '<div class="empty-msg">불러오는 중...</div>';
+    list.innerHTML = '<div class="empty-msg">' + t('loading') + '</div>';
 
     fetchLeaderboard(period).then(function(records) {
         if (!records) {
-            list.innerHTML = '<div class="empty-msg">서버에 연결할 수 없습니다.</div>';
+            list.innerHTML = '<div class="empty-msg">' + t('server_error') + '</div>';
             return;
         }
         if (records.length === 0) {
-            list.innerHTML = '<div class="empty-msg">기록이 없습니다.</div>';
+            list.innerHTML = '<div class="empty-msg">' + t('records_empty') + '</div>';
             return;
         }
 
@@ -409,17 +361,17 @@ function displayLeaderboard(period) {
             var m = Math.floor(record.time / 60);
             var s = record.time % 60;
             var ts = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-            var date = new Date(record.created_at).toLocaleDateString('ko-KR');
+            var date = new Date(record.created_at).toLocaleDateString(getLang());
             var isMe = record.uid === myUid;
-            var meTag = isMe ? ' <span style="color:var(--accent);font-size:0.75rem">(나)</span>' : '';
+            var meTag = isMe ? ' <span style="color:var(--accent);font-size:0.75rem">(' + t('me_tag') + ')</span>' : '';
             var rank = index + 1;
-            var rankLabel = rank === 1 ? '1위' : rank === 2 ? '2위' : rank === 3 ? '3위' : rank + '.';
+            var rankLabel = t('rank_label', {n: rank});
 
             return '<div class="record-item' + (isMe ? ' record-item-me' : '') + '">' +
                 '<div class="record-item-rank">' + rankLabel + '</div>' +
                 '<div class="record-item-info">' +
                     '<div class="record-item-name">' + escapeHtml(record.name) + meTag + '</div>' +
-                    '<div class="record-item-details">' + record.digits + '자리' + (record.mode ? ' · ' + formatMode(record.mode) : '') + ' | ' + ts + (record.continues ? ' | 이어서 ' + record.continues + '회' : '') + ' | ' + date + '</div>' +
+                    '<div class="record-item-details">' + t('digits_unit', {n: record.digits}) + (record.mode ? ' · ' + formatMode(record.mode) : '') + ' | ' + ts + (record.continues ? ' | ' + t('continues', {n: record.continues}) : '') + ' | ' + date + '</div>' +
                 '</div>' +
             '</div>';
         }).join('');
@@ -436,7 +388,7 @@ function escapeHtml(str) {
 function openSettings() {
     refreshUserName();
     var intpartOption = document.getElementById('intpartOption');
-    if (intpartOption) intpartOption.textContent = getConst().intPart + '. 부터';
+    if (intpartOption) intpartOption.textContent = t('intpart_opt', {n: getConst().intPart});
     document.getElementById('settingsModal').classList.add('show');
 }
 
@@ -454,7 +406,6 @@ function applyTheme(pref) {
     } else if (pref === 'light') {
         document.documentElement.dataset.theme = 'light';
     } else {
-        // system
         document.documentElement.dataset.theme = darkMediaQuery.matches ? 'dark' : 'light';
     }
 }
@@ -478,7 +429,6 @@ themeOption.addEventListener('change', function() {
 var startOption = document.getElementById('startOption');
 var modeOption = document.getElementById('modeOption');
 
-// Load saved options
 var savedStart = getSetting('piStartOption');
 if (savedStart === 'three') {
     savedStart = 'intpart';
@@ -497,6 +447,28 @@ modeOption.addEventListener('change', function() {
     setSetting('piModeOption', modeOption.value);
     if (activeView === 'memorize') initMemorize();
 });
+
+// ===== Lang Option =====
+var langOptionEl = document.getElementById('langOption');
+if (langOptionEl) {
+    langOptionEl.addEventListener('change', function() {
+        setLang(langOptionEl.value);
+        // setLang calls applyI18n() which handles data-i18n elements
+        var intpartEl = document.getElementById('intpartOption');
+        if (intpartEl) intpartEl.textContent = t('intpart_opt', {n: getConst().intPart});
+        if (activeView !== 'home' && activeView !== 'records') {
+            var viewTitleEl = document.getElementById('viewTitle');
+            var viewTitles = {
+                memorize: t('btn_memorize') + ' — ' + getConst().symbol,
+                search: t('btn_find') + ' — ' + getConst().symbol,
+            };
+            if (viewTitleEl) viewTitleEl.textContent = viewTitles[activeView] || '';
+        }
+        if (activeView === 'search') updateSearchDesc();
+        if (activeView === 'records') displayRecords();
+        refreshUserName();
+    });
+}
 
 // ===== Memorize Logic =====
 var currentMode = null;
@@ -551,8 +523,8 @@ function showNextQuestion(digitsPerQuestion, start) {
     piDisplay.scrollTop = piDisplay.scrollHeight;
 
     var nextDigits = CONST_1000.substring(2 + currentPosition, 2 + currentPosition + digitsPerQuestion);
-    questionText.textContent = '다음 ' + digitsPerQuestion + '자리는?';
-    document.getElementById('debugAnswer').textContent = '정답: ' + nextDigits;
+    questionText.textContent = t('question', {n: digitsPerQuestion});
+    document.getElementById('debugAnswer').textContent = t('debug_answer') + nextDigits;
 
     var correctAnswer = nextDigits;
     var choices = [correctAnswer];
@@ -594,8 +566,8 @@ function checkAnswer(selected, correct, digitsPerQuestion, start) {
     } else {
         var resultMessage = document.getElementById('resultMessage');
         resultMessage.innerHTML =
-            '<img src="' + randomImage('failure') + '" alt="틀렸습니다">' +
-            '<div>틀렸습니다. 정답은 ' + correct + '입니다.</div>';
+            '<img src="' + randomImage('failure') + '" alt="">' +
+            '<div>' + t('wrong_msg', {ans: correct}) + '</div>';
         resultMessage.className = 'result-msg show wrong';
         endMemorize();
     }
@@ -615,7 +587,7 @@ function initKeypadMode(start) {
 function updateKeypadDebug() {
     var CONST_1000 = getDigits1000();
     var next10 = CONST_1000.substring(2 + currentPosition, 2 + currentPosition + 10);
-    document.getElementById('keypadDebugAnswer').textContent = '정답: ' + next10;
+    document.getElementById('keypadDebugAnswer').textContent = t('debug_answer') + next10;
 }
 
 document.getElementById('keypad').addEventListener('click', function(e) {
@@ -644,8 +616,8 @@ function handleKeypadInput(digit) {
         if (currentPosition >= 1000) endMemorize();
     } else {
         resultMessage.innerHTML =
-            '<img src="' + randomImage('failure') + '" alt="틀렸습니다">' +
-            '<div>틀렸습니다. 정답은 ' + expectedDigit + '입니다.</div>';
+            '<img src="' + randomImage('failure') + '" alt="">' +
+            '<div>' + t('wrong_msg', {ans: expectedDigit}) + '</div>';
         resultMessage.className = 'result-msg show wrong';
         document.getElementById('keypad').classList.add('hidden');
         endMemorize();
@@ -703,7 +675,7 @@ function endMemorize() {
     if (currentPosition >= 1000) {
         scoreHtml = '<img src="' + randomImage('success') + '" alt="">';
     }
-    scoreHtml += '<div><strong>' + currentPosition + '</strong>자리 · ' + ts + '</div>';
+    scoreHtml += '<div>' + t('gameover_score', {n: currentPosition, t: ts}) + '</div>';
     document.getElementById('gameoverScore').innerHTML = scoreHtml;
 
     var recordNameInput = document.getElementById('recordName');
@@ -712,11 +684,11 @@ function endMemorize() {
     document.getElementById('saveRecordBtn').onclick = function() {
         saveRecord(recordNameInput.value, currentPosition, lastElapsed, continueCount);
         var btn = document.getElementById('saveRecordBtn');
-        btn.textContent = '기록 보기';
+        btn.textContent = t('view_records');
         btn.disabled = false;
         btn.onclick = function() { switchView('records'); };
     };
-    document.getElementById('saveRecordBtn').textContent = '기록 저장';
+    document.getElementById('saveRecordBtn').textContent = t('save_record');
     document.getElementById('saveRecordBtn').disabled = false;
 }
 
@@ -739,7 +711,6 @@ function continueMemorize() {
     timerInterval = setInterval(updateTimer, 100);
 
     if (mode === 'keypad') {
-        // Keypad: just resume, display is already correct
         document.getElementById('keypad').classList.remove('hidden');
         userInput = getDigits1000().substring(2, 2 + savedPosition);
     } else {
@@ -764,10 +735,10 @@ searchInput.addEventListener('keydown', function(e) {
 searchBtn.addEventListener('click', function() {
     var searchString = searchInput.value;
     if (!searchString || searchString.length === 0 || searchString.length > 8) {
-        searchResult.innerHTML = '<div class="empty-msg" style="color:var(--wrong)">1~8자리 숫자를 입력해주세요.</div>';
+        searchResult.innerHTML = '<div class="empty-msg" style="color:var(--wrong)">' + t('search_error') + '</div>';
         return;
     }
-    searchResult.innerHTML = '<div class="empty-msg">검색 중...</div>';
+    searchResult.innerHTML = '<div class="empty-msg">' + t('searching') + '</div>';
     setTimeout(function() {
         var results = findInConstant(searchString);
         displaySearchResults(searchString, results);
@@ -802,10 +773,10 @@ function displaySearchResults(searchString, results) {
     if (results.firstPosition === -1) {
         searchResult.innerHTML =
             '<div class="search-result-card">' +
-                '<img src="' + randomImage('not_found') + '" alt="못 찾음">' +
-                '<h4>검색 결과</h4>' +
-                '<p>검색어: <strong>' + searchString + '</strong></p>' +
-                '<p>' + constName + '의 백만자리 내에서 해당 숫자를 찾을 수 없습니다.</p>' +
+                '<img src="' + randomImage('not_found') + '" alt="">' +
+                '<h4>' + t('search_title') + '</h4>' +
+                '<p>' + t('search_query', {q: '<strong>' + escapeHtml(searchString) + '</strong>'}) + '</p>' +
+                '<p>' + t('search_not_found', {c: constName}) + '</p>' +
             '</div>';
         return;
     }
@@ -834,11 +805,11 @@ function displaySearchResults(searchString, results) {
 
     searchResult.innerHTML =
         '<div class="search-result-card">' +
-            '<img src="' + randomImage('found') + '" alt="찾음">' +
-            '<h4>검색 결과</h4>' +
-            '<p>검색어: <strong>' + searchString + '</strong></p>' +
-            '<p>최초 위치: 소숫점 이하 <strong>' + displayPosition.toLocaleString() + '</strong>번째 자리</p>' +
-            '<p>발견 횟수: <strong>' + results.count.toLocaleString() + '</strong>번</p>' +
+            '<img src="' + randomImage('found') + '" alt="">' +
+            '<h4>' + t('search_title') + '</h4>' +
+            '<p>' + t('search_query', {q: '<strong>' + escapeHtml(searchString) + '</strong>'}) + '</p>' +
+            '<p>' + t('search_pos', {n: '<strong>' + displayPosition.toLocaleString() + '</strong>'}) + '</p>' +
+            '<p>' + t('search_count', {n: '<strong>' + results.count.toLocaleString() + '</strong>'}) + '</p>' +
             '<div class="search-context">' +
                 '<div class="ctx-dim">' + upperLine + '</div>' +
                 '<div class="ctx-main">' + highlightCenter + '</div>' +
@@ -890,6 +861,8 @@ document.addEventListener('DOMContentLoaded', function() {
             el.style.display = 'none';
         });
     }
+    // Apply translations to all data-i18n elements
+    applyI18n();
     // Restore constant
     switchConstant(activeConstKey);
     refreshUserName();
