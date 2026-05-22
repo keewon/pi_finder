@@ -603,6 +603,11 @@ var MATHEMATICIANS_I18N = {
 var activeLang = 'ko';
 
 function detectLang() {
+  var param = new URLSearchParams(location.search).get('lang');
+  if (param && TRANSLATIONS[param]) {
+    localStorage.setItem('piLang', param);
+    return param;
+  }
   var saved = localStorage.getItem('piLang');
   if (saved && TRANSLATIONS[saved]) return saved;
   var nav = (navigator.language || 'en').substring(0, 2).toLowerCase();
