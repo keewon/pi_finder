@@ -130,7 +130,8 @@ function generateRandomName() {
     var maths = getMathematicians();
     var adj = adjs[Math.floor(Math.random() * adjs.length)];
     var m = maths[Math.floor(Math.random() * maths.length)];
-    return adj + ' ' + m.name;
+    var capAdj = adj.charAt(0).toUpperCase() + adj.slice(1);
+    return capAdj + ' ' + m.name;
 }
 
 function getMathematicianDesc(userName) {
