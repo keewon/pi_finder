@@ -213,7 +213,6 @@ input, select { font-family: inherit; }
 /* Background digits */
 #homeView {
     position: relative;
-    isolation: isolate;
 }
 
 .digits-flow {
@@ -221,7 +220,6 @@ input, select { font-family: inherit; }
     inset: 0;
     overflow: hidden;
     pointer-events: none;
-    z-index: -1;
 }
 
 .digits-flow-track {
