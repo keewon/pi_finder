@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1932px;
+    height: 828px;
+    overflow: hidden;
+    font-family: 'EB Garamond', Georgia, serif;
+    background-color: #f7f4e3;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 55px,
+      #e0d5be 56px
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card {
+    width: 1760px;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .digits-box {
+    background: #fdfbee;
+    border: 3px solid #b0a07a;
+    border-radius: 4px;
+    box-shadow: 5px 5px 0 #c4b49a;
+    padding: 36px 48px;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 72px;
+    font-weight: 600;
+    color: #2e5490;
+    text-align: center;
+    letter-spacing: 0.01em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .question {
+    text-align: center;
+    font-size: 52px;
+    color: #7a6a4a;
+  }
+
+  .choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .choice {
+    background: #fdfbee;
+    border: 3px solid #b0a07a;
+    border-radius: 4px;
+    box-shadow: 5px 5px 0 #c4b49a;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 64px;
+    font-weight: 700;
+    color: #2a2010;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 160px;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="digits-box">3.14159265358979323846264338832</div>
+    <div class="question">다음 4자리는?</div>
+    <div class="choices">
+      <div class="choice">0263</div>
+      <div class="choice">1860</div>
+      <div class="choice">0872</div>
+      <div class="choice">7950</div>
+    </div>
+  </div>
+</body>
+</html>
