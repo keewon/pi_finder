@@ -1,0 +1,15 @@
+{
+  "hash": "c842e923",
+  "configHash": "2c9e8a19",
+  "lockfileHash": "41a74d8a",
+  "browserHash": "a37dd395",
+  "optimized": {
+    "@apps-in-toss/web-framework": {
+      "src": "../../node_modules/@apps-in-toss/web-framework/dist-web/index.js",
+      "file": "@apps-in-toss_web-framework.js",
+      "fileHash": "1eeb6f9f",
+      "needsInterop": false
+    }
+  },
+  "chunks": {}
+}

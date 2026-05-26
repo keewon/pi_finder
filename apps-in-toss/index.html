@@ -1,12 +1,262 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AIT App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>수학 상수 외우기 &amp; 찾기</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="apple-touch-icon-167x167.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="apple-touch-icon-120x120.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=11">
+
+    <!-- SVG pencil filter (referenced by math diagrams) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+            <filter id="pencil-sketch" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.04 0.06" numOctaves="4" result="noise"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.4" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Toss bridge (module, deferred automatically) -->
+    <script type="module" src="/src/main.js"></script>
+</head>
+<body>
+    <div class="app" id="app" data-const="pi">
+
+        <!-- ===== Header ===== -->
+        <header class="header">
+            <div class="header-left">
+                <button class="back-btn" id="backBtn" style="display:none">←</button>
+            </div>
+            <div class="header-center">
+                <div class="const-toggles" id="constToggles">
+                    <button class="const-btn active" data-const="pi">π</button>
+                    <button class="const-btn" data-const="e">e</button>
+                    <button class="const-btn" data-const="sqrt2">√2</button>
+                    <button class="const-btn" data-const="phi">φ</button>
+                </div>
+                <span class="view-title" id="viewTitle" style="display:none"></span>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" id="settingsBtn" aria-label="설정">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- ===== HOME VIEW ===== -->
+        <div class="view active" id="homeView">
+            <!-- Background digits -->
+            <div class="digits-flow">
+                <div class="digits-flow-track" id="digitsTrack"></div>
+            </div>
+
+            <div class="home-hero">
+                <!-- Character -->
+                <div class="penguin">
+                    <div id="constDiagram"></div>
+                </div>
+
+                <div class="home-title" id="homeTitle">π</div>
+                <div class="home-greeting"><span data-i18n="greeting">안녕하세요,</span> <span class="nickname" id="userName"></span></div>
+            </div>
+
+            <!-- Const toggles: 토스 앱에서만 표시 -->
+            <div class="const-toggles in-toss-only" id="homeConstToggles">
+                <button class="const-btn active" data-const="pi">π</button>
+                <button class="const-btn" data-const="e">e</button>
+                <button class="const-btn" data-const="sqrt2">√2</button>
+                <button class="const-btn" data-const="phi">φ</button>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="home-actions">
+                <button class="action-btn primary" id="goMemorize">
+                    <span data-i18n="btn_memorize">외우기</span>
+                </button>
+                <button class="action-btn outline" id="goSearch">
+                    <span data-i18n="btn_find">찾기</span>
+                </button>
+                <button class="action-btn outline action-btn-full" id="goRecords">
+                    <span data-i18n="btn_records">기록 보기</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ===== MEMORIZE VIEW ===== -->
+        <div class="view" id="memorizeView">
+            <!-- Multiple choice mode -->
+            <div id="multipleChoiceMode">
+                <div class="progress-section">
+                    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                    <div class="stats">
+                        <span><span id="currentPosition">0</span><span data-i18n="stats_of_1000"> / 1000자리</span></span>
+                        <span id="elapsedTime">00:00</span>
+                    </div>
+                </div>
+                <div class="digits-display" id="piDisplay"></div>
+                <div class="question-text" id="questionText"></div>
+                <div class="debug-answer" id="debugAnswer"></div>
+                <div class="choices-grid" id="choices"></div>
+                <div class="result-msg" id="resultMessage"></div>
+            </div>
+
+            <!-- Keypad mode -->
+            <div id="keypadMode" class="hidden">
+                <div class="progress-section">
+                    <div class="progress-bar"><div class="progress-fill" id="keypadProgressFill"></div></div>
+                    <div class="stats">
+                        <span><span id="keypadCurrentPosition">0</span><span data-i18n="stats_of_1000"> / 1000자리</span></span>
+                        <span id="keypadElapsedTime">00:00</span>
+                    </div>
+                </div>
+                <div class="digits-display" id="keypadPiDisplay"></div>
+                <div class="debug-answer" id="keypadDebugAnswer"></div>
+                <div class="keypad-grid" id="keypad">
+                    <button class="keypad-key" data-key="1">1</button>
+                    <button class="keypad-key" data-key="2">2</button>
+                    <button class="keypad-key" data-key="3">3</button>
+                    <button class="keypad-key" data-key="4">4</button>
+                    <button class="keypad-key" data-key="5">5</button>
+                    <button class="keypad-key" data-key="6">6</button>
+                    <button class="keypad-key" data-key="7">7</button>
+                    <button class="keypad-key" data-key="8">8</button>
+                    <button class="keypad-key" data-key="9">9</button>
+                    <button class="keypad-key delete" data-key="delete">⌫</button>
+                    <button class="keypad-key" data-key="0">0</button>
+                </div>
+                <div class="result-msg" id="keypadResultMessage"></div>
+            </div>
+
+            <!-- Game over panel -->
+            <div class="gameover-panel" id="gameoverPanel">
+                <div class="gameover-score" id="gameoverScore"></div>
+                <div class="gameover-actions">
+                    <button class="btn btn-primary btn-block" id="retryBtn" data-i18n="gameover_retry">다시하기</button>
+                    <button class="btn btn-outline btn-block" id="continueBtn" data-i18n="gameover_continue">이어서하기</button>
+                </div>
+                <div class="gameover-save">
+                    <input type="text" id="recordName" data-i18n-ph="name_placeholder" placeholder="이름">
+                    <button class="btn btn-primary btn-sm" id="saveRecordBtn" data-i18n="save_record">저장</button>
+                </div>
+                <button class="btn btn-outline btn-block in-toss-only" id="homeBtn" onclick="switchView('home')" data-i18n="btn_home">홈으로</button>
+            </div>
+        </div>
+
+        <!-- ===== SEARCH VIEW ===== -->
+        <div class="view" id="searchView">
+            <div class="search-desc" id="searchDesc">
+                <img id="searchCharImage" src="images/search/07_question.png" alt="Search">
+                <div id="searchDescText"></div>
+            </div>
+            <div class="search-input-group">
+                <input type="text" class="search-input" id="searchInput" data-i18n-ph="search_placeholder" placeholder="숫자 입력 (최대 8자리)" maxlength="8" inputmode="numeric" pattern="[0-9]*">
+                <button class="btn btn-primary" id="searchBtn" data-i18n="search_btn">찾기</button>
+            </div>
+            <div class="search-result" id="searchResult"></div>
+            <button class="btn btn-outline btn-block in-toss-only" onclick="switchView('home')" data-i18n="btn_home">홈으로</button>
+        </div>
+
+        <!-- ===== RECORDS VIEW ===== -->
+        <div class="view" id="recordsView">
+            <div class="toss-view-header in-toss-only">
+                <button class="btn btn-outline toss-back-btn" onclick="switchView('home')" data-i18n="btn_home">홈으로</button>
+                <div class="const-toggles" id="recordsConstToggles">
+                    <button class="const-btn active" data-const="pi">π</button>
+                    <button class="const-btn" data-const="e">e</button>
+                    <button class="const-btn" data-const="sqrt2">√2</button>
+                    <button class="const-btn" data-const="phi">φ</button>
+                </div>
+            </div>
+            <div class="records-tabs" id="recordsTabs">
+                <button class="tab-btn active" data-tab="mine" data-i18n="tab_mine">내 기록</button>
+                <button class="tab-btn" data-tab="all" data-i18n="tab_all">전체</button>
+                <button class="tab-btn" data-tab="monthly" data-i18n="tab_monthly">이번 달</button>
+                <button class="tab-btn" data-tab="weekly" data-i18n="tab_weekly">이번 주</button>
+            </div>
+            <div class="records-list" id="recordsList"></div>
+        </div>
+
+        <!-- ===== SETTINGS MODAL ===== -->
+        <div class="modal-overlay" id="settingsModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 data-i18n="settings_title">설정</h3>
+                    <button class="modal-close" id="settingsClose">×</button>
+                </div>
+                <div class="setting-group">
+                    <div class="setting-label" data-i18n="settings_username">사용자 이름</div>
+                    <div class="setting-value">
+                        <span><span id="settingsUserName"></span><sup class="footnote-star" id="settingsUserStar">*</sup></span>
+                        <button id="randomNameBtn" data-i18n="btn_random">랜덤</button>
+                    </div>
+                    <div class="setting-user-desc" id="settingsUserDesc"></div>
+                </div>
+                <div class="setting-group">
+                    <div class="setting-label" data-i18n="settings_startpos">시작 위치</div>
+                    <select class="setting-select" id="startOption">
+                        <option value="decimal" data-i18n="opt_decimal">소숫점 이하부터</option>
+                        <option value="intpart" id="intpartOption">3. 부터</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <div class="setting-label" data-i18n="settings_mode">모드</div>
+                    <select class="setting-select" id="modeOption">
+                        <option value="keypad">키패드 입력 (1자리씩)</option>
+                        <option value="multiple2">객관식 (2자리씩)</option>
+                        <option value="multiple3">객관식 (3자리씩)</option>
+                        <option value="multiple4" selected>객관식 (4자리씩)</option>
+                        <option value="multiple5">객관식 (5자리씩)</option>
+                        <option value="multiple6">객관식 (6자리씩)</option>
+                        <option value="multiple7">객관식 (7자리씩)</option>
+                        <option value="multiple8">객관식 (8자리씩)</option>
+                        <option value="multiple9">객관식 (9자리씩)</option>
+                        <option value="multiple10">객관식 (10자리씩)</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <div class="setting-label" data-i18n="settings_theme">테마</div>
+                    <select class="setting-select" id="themeOption">
+                        <option value="system" data-i18n="theme_system">시스템 설정</option>
+                        <option value="light" data-i18n="theme_light">라이트</option>
+                        <option value="dark" data-i18n="theme_dark">다크</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <div class="setting-label" data-i18n="settings_lang">언어</div>
+                    <select class="setting-select" id="langOption">
+                        <option value="ko">한국어</option>
+                        <option value="en">English</option>
+                        <option value="ja">日本語</option>
+                        <option value="zh">中文</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="pt">Português</option>
+                        <option value="ru">Русский</option>
+                        <option value="ar">العربية</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="pi-data.js"></script>
+    <script src="e-data.js"></script>
+    <script src="sqrt2-data.js"></script>
+    <script src="phi-data.js"></script>
+    <script src="i18n.js?v=2"></script>
+    <script src="app.js?v=5"></script>
+</body>
 </html>
