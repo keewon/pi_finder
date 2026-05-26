@@ -861,12 +861,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     // Apply translations to all data-i18n elements
     applyI18n();
+    // URL hash: constant override (#pi, #e, #sqrt2, #phi)
+    var hash = window.location.hash.replace('#', '').toLowerCase();
+    if (CONSTANTS[hash]) activeConstKey = hash;
     // Restore constant
     switchConstant(activeConstKey);
     refreshUserName();
 
-    // URL hash navigation
-    var hash = window.location.hash.replace('#', '');
+    // URL hash: view navigation
     if (hash === 'memorize' || hash === 'search' || hash === 'records') {
         switchView(hash);
     } else {

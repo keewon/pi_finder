@@ -1,6 +1,6 @@
 # Cloudflare 설정 정리
 
-## 1. Cloudflare Pages — 프론트엔드
+## 1. Cloudflare Pages — original 프론트엔드
 
 | 항목 | 값 |
 |------|-----|
@@ -9,14 +9,31 @@
 | 커스텀 도메인 | `https://pifi.acidblob.com` |
 | 배포 방식 | `wrangler pages deploy` (수동) |
 
+### 최초 1회 설정
+
+1. [Cloudflare 대시보드](https://dash.cloudflare.com) → **Workers & Pages** → **Create** → **Pages** → **Direct Upload**로 프로젝트 생성
+2. 프로젝트 이름: `pi-finder`
+3. 최초 업로드는 대시보드에서 `original/` 폴더를 드래그해도 되고, 아래 CLI 명령으로 해도 됨
+
+Wrangler 로그인 (최초 1회):
+```bash
+cd backend
+npx wrangler login
+```
+
 ### 배포 명령어
 
 ```bash
 cd backend
-npx wrangler pages deploy .. --project-name pi-finder --commit-dirty=true
+npx wrangler pages deploy ../original --project-name pi-finder --commit-dirty=true
 ```
 
-### DNS 설정 (acidblob.com)
+> `--commit-dirty=true` : git에 커밋되지 않은 파일도 포함해서 올림
+
+### 커스텀 도메인 연결
+
+배포 후 Cloudflare 대시보드 → **pi-finder** 프로젝트 → **Custom domains** → `pifi.acidblob.com` 추가.  
+DNS는 자동 설정되거나 아래를 수동으로 추가:
 
 | Type | Name | Target | Proxy |
 |------|------|--------|-------|
@@ -24,7 +41,24 @@ npx wrangler pages deploy .. --project-name pi-finder --commit-dirty=true
 
 ---
 
-## 2. Cloudflare Workers — 백엔드 API
+## 2. 앱인토스 미니앱 — apps-in-toss
+
+| 항목 | 값 |
+|------|-----|
+| 배포 방식 | `ait deploy` (수동) |
+| 설정 파일 | `apps-in-toss/granite.config.ts` |
+
+### 배포 명령어
+
+```bash
+cd apps-in-toss
+npm run build
+npm run deploy
+```
+
+---
+
+## 3. Cloudflare Workers — 백엔드 API
 
 | 항목 | 값 |
 |------|-----|
@@ -51,7 +85,7 @@ npx wrangler deploy
 
 ---
 
-## 3. D1 데이터베이스
+## 4. D1 데이터베이스
 
 | 항목 | 값 |
 |------|-----|
@@ -73,12 +107,12 @@ npx wrangler d1 execute pi-finder-db --remote --file=schema.sql
 
 ---
 
-## 4. 로컬 개발
+## 5. 로컬 개발
 
 ```bash
 cd backend
 npx wrangler dev   # API 서버: http://localhost:8787
 ```
 
-프론트엔드는 `index.html`을 브라우저에서 직접 열거나 정적 서버로 서빙합니다.  
+original 프론트엔드는 `original/index.html`을 브라우저에서 직접 열거나 정적 서버로 서빙합니다.  
 `localhost` 또는 `file://` 환경에서는 `app.js`가 자동으로 로컬 API를 바라봅니다.
