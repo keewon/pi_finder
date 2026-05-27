@@ -486,6 +486,7 @@ input, select { font-family: inherit; }
 }
 
 .gameover-save input:focus { border-color: var(--accent); }
+.gameover-save .btn { white-space: nowrap; min-width: 82px; }
 
 /* ===== Records Tabs ===== */
 .records-tabs {
@@ -878,17 +879,9 @@ input, select { font-family: inherit; }
 /* 검색/기록 화면 상단 바 */
 .toss-view-header {
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 12px 16px;
     gap: 12px;
     border-bottom: 1px solid var(--border);
     background: var(--card);
 }
-
-.toss-back-btn {
-    flex-shrink: 0;
-}
-
-.gameover-panel > .in-toss-only { margin-top: 12px; }
-
-#searchView > .in-toss-only { margin-top: 12px; }

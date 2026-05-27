@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <base href="/">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>수학 상수 외우기 &amp; 찾기</title>
@@ -150,7 +151,6 @@
                     <input type="text" id="recordName" data-i18n-ph="name_placeholder" placeholder="이름">
                     <button class="btn btn-primary btn-sm" id="saveRecordBtn" data-i18n="save_record">저장</button>
                 </div>
-                <button class="btn btn-outline btn-block in-toss-only" id="homeBtn" onclick="switchView('home')" data-i18n="btn_home">홈으로</button>
             </div>
         </div>
 
@@ -165,13 +165,11 @@
                 <button class="btn btn-primary" id="searchBtn" data-i18n="search_btn">찾기</button>
             </div>
             <div class="search-result" id="searchResult"></div>
-            <button class="btn btn-outline btn-block in-toss-only" onclick="switchView('home')" data-i18n="btn_home">홈으로</button>
         </div>
 
         <!-- ===== RECORDS VIEW ===== -->
         <div class="view" id="recordsView">
             <div class="toss-view-header in-toss-only">
-                <button class="btn btn-outline toss-back-btn" onclick="switchView('home')" data-i18n="btn_home">홈으로</button>
                 <div class="const-toggles" id="recordsConstToggles">
                     <button class="const-btn active" data-const="pi">π</button>
                     <button class="const-btn" data-const="e">e</button>

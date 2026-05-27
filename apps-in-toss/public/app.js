@@ -64,6 +64,8 @@ const CONST_DIAGRAMS = {
 </svg>`
 };
 
+const GOAL_DIGITS = 1000;
+
 let activeConstKey = localStorage.getItem('activeConst') || 'pi';
 
 function getConst() { return CONSTANTS[activeConstKey]; }
@@ -190,6 +192,10 @@ function switchConstant(key) {
     if (activeView === 'records') displayRecords();
     if (activeView === 'search') updateSearchDesc();
 
+    if (activeView !== 'home') {
+        history.replaceState(null, '', '/' + activeView + '/' + activeConstKey);
+    }
+
     var intpartOption = document.getElementById('intpartOption');
     if (intpartOption) intpartOption.textContent = t('intpart_opt', {n: getConst().intPart});
 }
@@ -227,10 +233,19 @@ function switchView(view) {
         viewTitle.textContent = titles[view] || '';
     }
 
-    history.replaceState(null, '', view === 'home' ? location.pathname : '#' + view);
+    history.replaceState(null, '', view === 'home' ? '/' : '/' + view + '/' + activeConstKey);
+    if (typeof window.registerBackEvent === 'function') {
+        if (view === 'home') {
+            window.registerCloseBackEvent();
+        } else {
+            window.registerBackEvent(function() { switchView('home'); });
+        }
+    }
 
     if (view === 'memorize') initMemorize();
     if (view === 'search') {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchResult').innerHTML = '';
         document.getElementById('searchCharImage').src = randomImage('search');
         updateSearchDesc();
     }
@@ -513,7 +528,7 @@ function showNextQuestion(digitsPerQuestion, start) {
 
     resultMessage.classList.remove('show');
 
-    if (currentPosition >= 1000) { endMemorize(); return; }
+    if (currentPosition >= GOAL_DIGITS) { endMemorize(); return; }
 
     var CONST_1000 = getDigits1000();
     var displayText = CONST_1000.substring(0, 2 + currentPosition);
@@ -558,7 +573,7 @@ function checkAnswer(selected, correct, digitsPerQuestion, start) {
         currentPosition += digitsPerQuestion;
         updateProgress();
         setTimeout(function() {
-            if (currentPosition < 1000) showNextQuestion(digitsPerQuestion, start);
+            if (currentPosition < GOAL_DIGITS) showNextQuestion(digitsPerQuestion, start);
             else endMemorize();
         }, 200);
     } else {
@@ -597,7 +612,7 @@ document.getElementById('keypad').addEventListener('click', function(e) {
 });
 
 function handleKeypadInput(digit) {
-    if (currentPosition >= 1000) { endMemorize(); return; }
+    if (currentPosition >= GOAL_DIGITS) { endMemorize(); return; }
 
     var CONST_1000 = getDigits1000();
     var expectedDigit = CONST_1000[2 + currentPosition];
@@ -611,7 +626,7 @@ function handleKeypadInput(digit) {
         display.scrollTop = display.scrollHeight;
         updateKeypadProgress();
         updateKeypadDebug();
-        if (currentPosition >= 1000) endMemorize();
+        if (currentPosition >= GOAL_DIGITS) endMemorize();
     } else {
         resultMessage.innerHTML =
             '<img src="' + randomImage('failure') + '" alt="">' +
@@ -634,13 +649,13 @@ function handleDelete() {
 
 // ===== Progress & Timer =====
 function updateProgress() {
-    var pct = (currentPosition / 1000) * 100;
+    var pct = (currentPosition / GOAL_DIGITS) * 100;
     document.getElementById('progressFill').style.width = pct + '%';
     document.getElementById('currentPosition').textContent = currentPosition;
 }
 
 function updateKeypadProgress() {
-    var pct = (currentPosition / 1000) * 100;
+    var pct = (currentPosition / GOAL_DIGITS) * 100;
     document.getElementById('keypadProgressFill').style.width = pct + '%';
     document.getElementById('keypadCurrentPosition').textContent = currentPosition;
 }
@@ -670,7 +685,7 @@ function endMemorize() {
     panel.classList.add('show');
 
     var scoreHtml = '';
-    if (currentPosition >= 1000) {
+    if (currentPosition >= GOAL_DIGITS) {
         scoreHtml = '<img src="' + randomImage('success') + '" alt="">';
     }
     scoreHtml += '<div>' + t('gameover_score', {n: currentPosition, t: ts}) + '</div>';
@@ -827,7 +842,7 @@ document.getElementById('goMemorize').addEventListener('click', function() { swi
 document.getElementById('goSearch').addEventListener('click', function() { switchView('search'); });
 document.getElementById('goRecords').addEventListener('click', function() { switchView('records'); });
 
-// Back button
+// Back button (DOM + native)
 document.getElementById('backBtn').addEventListener('click', function() { switchView('home'); });
 
 // Retry / Continue
@@ -861,16 +876,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     // Apply translations to all data-i18n elements
     applyI18n();
-    // URL hash: constant override (#pi, #e, #sqrt2, #phi)
-    var hash = window.location.hash.replace('#', '').toLowerCase();
-    if (CONSTANTS[hash]) activeConstKey = hash;
+    // Path-based routing: /view/const (e.g. /memorize/pi, /search/e)
+    var pathParts = window.location.pathname.split('/').filter(Boolean);
+    var viewFromPath = pathParts[0] || '';
+    var constFromPath = pathParts[1] || '';
+    if (CONSTANTS[constFromPath]) activeConstKey = constFromPath;
     // Restore constant
     switchConstant(activeConstKey);
     refreshUserName();
 
-    // URL hash: view navigation
-    if (hash === 'memorize' || hash === 'search' || hash === 'records') {
-        switchView(hash);
+    if (viewFromPath === 'memorize' || viewFromPath === 'search' || viewFromPath === 'records') {
+        switchView(viewFromPath);
     } else {
         switchView('home');
     }

@@ -64,6 +64,8 @@ const CONST_DIAGRAMS = {
 </svg>`
 };
 
+const GOAL_DIGITS = 1000;
+
 let activeConstKey = localStorage.getItem('activeConst') || 'pi';
 
 function getConst() { return CONSTANTS[activeConstKey]; }
@@ -231,6 +233,8 @@ function switchView(view) {
 
     if (view === 'memorize') initMemorize();
     if (view === 'search') {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchResult').innerHTML = '';
         document.getElementById('searchCharImage').src = randomImage('search');
         updateSearchDesc();
     }
@@ -513,7 +517,7 @@ function showNextQuestion(digitsPerQuestion, start) {
 
     resultMessage.classList.remove('show');
 
-    if (currentPosition >= 1000) { endMemorize(); return; }
+    if (currentPosition >= GOAL_DIGITS) { endMemorize(); return; }
 
     var CONST_1000 = getDigits1000();
     var displayText = CONST_1000.substring(0, 2 + currentPosition);
@@ -558,7 +562,7 @@ function checkAnswer(selected, correct, digitsPerQuestion, start) {
         currentPosition += digitsPerQuestion;
         updateProgress();
         setTimeout(function() {
-            if (currentPosition < 1000) showNextQuestion(digitsPerQuestion, start);
+            if (currentPosition < GOAL_DIGITS) showNextQuestion(digitsPerQuestion, start);
             else endMemorize();
         }, 200);
     } else {
@@ -597,7 +601,7 @@ document.getElementById('keypad').addEventListener('click', function(e) {
 });
 
 function handleKeypadInput(digit) {
-    if (currentPosition >= 1000) { endMemorize(); return; }
+    if (currentPosition >= GOAL_DIGITS) { endMemorize(); return; }
 
     var CONST_1000 = getDigits1000();
     var expectedDigit = CONST_1000[2 + currentPosition];
@@ -611,7 +615,7 @@ function handleKeypadInput(digit) {
         display.scrollTop = display.scrollHeight;
         updateKeypadProgress();
         updateKeypadDebug();
-        if (currentPosition >= 1000) endMemorize();
+        if (currentPosition >= GOAL_DIGITS) endMemorize();
     } else {
         resultMessage.innerHTML =
             '<img src="' + randomImage('failure') + '" alt="">' +
@@ -634,13 +638,13 @@ function handleDelete() {
 
 // ===== Progress & Timer =====
 function updateProgress() {
-    var pct = (currentPosition / 1000) * 100;
+    var pct = (currentPosition / GOAL_DIGITS) * 100;
     document.getElementById('progressFill').style.width = pct + '%';
     document.getElementById('currentPosition').textContent = currentPosition;
 }
 
 function updateKeypadProgress() {
-    var pct = (currentPosition / 1000) * 100;
+    var pct = (currentPosition / GOAL_DIGITS) * 100;
     document.getElementById('keypadProgressFill').style.width = pct + '%';
     document.getElementById('keypadCurrentPosition').textContent = currentPosition;
 }
@@ -670,7 +674,7 @@ function endMemorize() {
     panel.classList.add('show');
 
     var scoreHtml = '';
-    if (currentPosition >= 1000) {
+    if (currentPosition >= GOAL_DIGITS) {
         scoreHtml = '<img src="' + randomImage('success') + '" alt="">';
     }
     scoreHtml += '<div>' + t('gameover_score', {n: currentPosition, t: ts}) + '</div>';

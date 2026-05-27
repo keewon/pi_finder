@@ -495,6 +495,7 @@ input, select { font-family: inherit; }
 }
 
 .gameover-save input:focus { border-color: var(--accent); }
+.gameover-save .btn { white-space: nowrap; min-width: 82px; }
 
 /* ===== Records Tabs ===== */
 .records-tabs {

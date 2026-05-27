@@ -1,4 +1,4 @@
-import { partner, tdsEvent } from '@apps-in-toss/web-framework';
+import { partner, tdsEvent, graniteEvent, closeView } from '@apps-in-toss/web-framework';
 
 // import는 항상 먼저 평가되지만, SDK는 __CONSTANT_HANDLER_MAP을 직접 생성하지 않으므로
 // 이 시점에서 체크하면 토스 앱 환경 여부를 정확히 감지할 수 있다
@@ -31,4 +31,26 @@ if (isInToss) {
       }
     },
   });
+
 }
+
+// Home button event — always navigates to home screen
+graniteEvent.addEventListener('homeEvent', {
+  onEvent: () => {
+    if (typeof window.switchView === 'function') window.switchView('home');
+  },
+  onError: () => {},
+});
+
+// Back event management — called from app.js switchView()
+let _backUnsub = null;
+window.registerBackEvent = function(handler) {
+  if (_backUnsub) _backUnsub();
+  _backUnsub = graniteEvent.addEventListener('backEvent', {
+    onEvent: handler,
+    onError: () => {},
+  });
+};
+window.registerCloseBackEvent = function() {
+  window.registerBackEvent(() => closeView().catch(() => {}));
+};
