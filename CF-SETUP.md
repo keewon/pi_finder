@@ -93,6 +93,14 @@ npx wrangler deploy
 | 데이터베이스 ID | `9e131ce1-3be2-449b-8093-55dc794ea215` |
 | 스키마 파일 | `backend/schema.sql` |
 
+### DB 다운로드 (SQL dump)
+
+```bash
+cd backend
+bash scripts/download-db.sh
+# → db-backups/pi-finder-db_YYYYMMDD_HHMMSS.sql 생성
+```
+
 ### 스키마 초기화
 
 ```bash

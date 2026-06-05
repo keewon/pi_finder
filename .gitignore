@@ -55,6 +55,9 @@ bower_components/
 # Wrangler local dev state (D1 SQLite, KV, etc.)
 .wrangler/
 
+# DB backups
+backend/db-backups/
+
 # Cache
 .cache/
 .parcel-cache/
