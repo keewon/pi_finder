@@ -1,3 +1,4 @@
+import './analytics.js';
 import { partner, tdsEvent, graniteEvent, closeView } from '@apps-in-toss/web-framework';
 
 // import는 항상 먼저 평가되지만, SDK는 __CONSTANT_HANDLER_MAP을 직접 생성하지 않으므로

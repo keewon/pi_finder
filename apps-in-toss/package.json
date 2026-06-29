@@ -9,10 +9,18 @@
     "deploy": "ait deploy"
   },
   "dependencies": {
-    "@apps-in-toss/web-framework": "^2.6.0"
+    "@apps-in-toss/web-framework": "^2.6.0",
+    "firebase": "^12.15.0"
   },
   "devDependencies": {
     "typescript": "~5.7.2",
     "vite": "^6.2.0"
+  },
+  "allowScripts": {
+    "@firebase/util@1.15.1": true,
+    "esbuild@0.25.8": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.25.5": true,
+    "esbuild@0.27.7": true
   }
 }

@@ -205,6 +205,7 @@ var activeView = 'home';
 
 function switchView(view) {
     activeView = view;
+    window.logAnalyticsEvent?.('screen_view', { firebase_screen: view });
 
     ['homeView', 'memorizeView', 'searchView', 'recordsView'].forEach(function(id) {
         document.getElementById(id).classList.toggle('active', id === view + 'View');
@@ -257,6 +258,7 @@ function formatMode(mode) {
 }
 
 function saveRecord(name, digits, time, continues) {
+    window.logAnalyticsEvent?.('record_save', { digits: digits, game_mode: currentMode, constant: activeConstKey });
     var resolvedName = name || getUserName();
     var localId = Date.now();
     var mode = currentMode || '';
@@ -495,6 +497,7 @@ function initMemorize() {
     userInput = '';
     continueCount = 0;
     startTime = Date.now();
+    window.logAnalyticsEvent?.('game_start', { game_mode: mode, constant: activeConstKey });
 
     if (timerInterval) clearInterval(timerInterval);
     timerInterval = setInterval(updateTimer, 100);
@@ -666,6 +669,14 @@ function endMemorize() {
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
 
     lastElapsed = Math.floor((Date.now() - startTime) / 1000);
+    window.logAnalyticsEvent?.('game_over', {
+        digits: currentPosition,
+        time_secs: lastElapsed,
+        continues: continueCount,
+        game_mode: currentMode,
+        constant: activeConstKey,
+        success: currentPosition >= GOAL_DIGITS ? 1 : 0,
+    });
     var m = Math.floor(lastElapsed / 60);
     var s = lastElapsed % 60;
     var ts = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
@@ -699,6 +710,7 @@ function retryMemorize() {
 }
 
 function continueMemorize() {
+    window.logAnalyticsEvent?.('game_continue', { position: currentPosition, game_mode: currentMode, constant: activeConstKey });
     continueCount++;
     var savedPosition = currentPosition;
     var mode = modeOption.value;
@@ -743,6 +755,7 @@ searchBtn.addEventListener('click', function() {
     searchResult.innerHTML = '<div class="empty-msg">' + t('searching') + '</div>';
     setTimeout(function() {
         var results = findInConstant(searchString);
+        window.logAnalyticsEvent?.('pi_search', { query_length: searchString.length, found: results.firstPosition !== -1 ? 1 : 0, constant: activeConstKey });
         displaySearchResults(searchString, results);
     }, 10);
 });
